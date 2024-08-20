@@ -8,7 +8,7 @@ import { DatabaseModule } from './database/database.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.development', '.env.production'],
+      envFilePath: ['.env.development.local', '.env.production.local'],
     }),
     DatabaseModule,
   ],
