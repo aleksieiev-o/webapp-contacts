@@ -4,12 +4,42 @@
 
 ## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Here's a list of recommended next steps, to start project on your local mashine:
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- Clone this repository to your local mashine;
+- Install all dependensies:
+```
+npm install
+```
+- Create the `env.development.local` file in the root folder with the following keys and values:
+```
+HOST=0.0.0.0
+PORT=3000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER_NAME=root
+DB_USER_PASSWORD=root
+DB_NAME=contactsDatabase
+```
+- Install the database MariaDB on your local mashine;
+- Create a database named `contactsDatabase`:
+```
+CREATE DATABASE contactsDatabase;
+```
+- Run the project locally in development mode:
+```
+npm run start:dev
+```
+- Also your can run the project locally in production mode:
+```
+npm run build
+npm run start
+```
 
 ## Technologies
 
+- TypeScript
 - [NestJS](https://docs.nestjs.com/)
 - [MariaDB](https://mariadb.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
