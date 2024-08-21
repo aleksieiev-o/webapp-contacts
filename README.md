@@ -7,10 +7,12 @@
 Here's a list of recommended next steps, to start project on your local mashine:
 
 - Clone this repository to your local mashine;
+
 - Install all dependensies:
 ```
 npm install
 ```
+
 - Create the `env.development.local` file in the root folder with the following keys and values:
 ```
 HOST=0.0.0.0
@@ -22,15 +24,21 @@ DB_USER_NAME=root
 DB_USER_PASSWORD=root
 DB_NAME=contactsDatabase
 ```
+
 - Install the database MariaDB on your local mashine;
+
 - Create a database named `contactsDatabase`:
 ```
 CREATE DATABASE contactsDatabase;
 ```
+
+- Create database columns. Change the flag `synchronize: false` in the `DatabaseModule` to  `true`, to create automatic all columns form entities. Return then the flag to `false`, to avoid the database errors.
+
 - Run the project locally in development mode:
 ```
 npm run start:dev
 ```
+
 - Also your can run the project locally in production mode:
 ```
 npm run build
