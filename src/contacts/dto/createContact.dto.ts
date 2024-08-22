@@ -1,4 +1,5 @@
 import { IsString, Length, IsNotEmpty, ArrayMinSize, IsArray } from 'class-validator';
+import { PhoneEntity } from '../entities/phone.entity';
 
 export class CreateContactDTO {
   @IsNotEmpty()
@@ -28,7 +29,6 @@ export class CreateContactDTO {
   readonly postalCode: string;
 
   @IsArray()
-  @IsString({ each: true })
   @ArrayMinSize(1)
-  readonly phones: string[];
+  readonly phones: PhoneEntity[];
 }

@@ -3,16 +3,12 @@ import { ContactEntity } from './entities/contact.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateContactDTO } from './dto/createContact.dto';
-import { PhoneEntity } from './entities/phone.entity';
 
 @Injectable()
 export class ContactsService {
   constructor(
     @InjectRepository(ContactEntity)
     private readonly contactRepository: Repository<ContactEntity>,
-
-    @InjectRepository(PhoneEntity)
-    private readonly phoneRepository: Repository<PhoneEntity>,
   ) {}
 
   async findAll(): Promise<ContactEntity[] | NotFoundException> {
@@ -34,17 +30,15 @@ export class ContactsService {
 
       return contact;
     } catch (err) {
-      return new NotFoundException(`Some error was occured: ${err}`);
+      return new NotFoundException(`An error occurred: ${err}`);
     }
   }
 
   async create(payload: CreateContactDTO): Promise<ContactEntity> {
-    const { lastName, firstName, street, houseNumber, city, postalCode, phones } = payload;
-
     try {
-      const contact: ContactEntity = this.contactRepository.create({ lastName, firstName, street, houseNumber, city, postalCode });
+      const { lastName, firstName, street, houseNumber, city, postalCode, phones } = payload;
 
-      contact.phones = phones.map((phone) => this.phoneRepository.create({ phone, contact }));
+      const contact: ContactEntity = this.contactRepository.create({ lastName, firstName, street, houseNumber, city, postalCode, phones });
 
       return await this.contactRepository.save(contact);
     } catch (err) {
@@ -62,7 +56,7 @@ export class ContactsService {
 
       return await this.contactRepository.remove(contact);
     } catch (err) {
-      return new NotFoundException(`Some error was occured: ${err}`);
+      return new NotFoundException(`Some error was occurred: ${err}`);
     }
   }
 }
