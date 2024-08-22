@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { ContactEntity } from './contact.entity';
 import { EContactEntities } from '../../shared/entities/types';
 import { BasePartOfEntity } from 'src/shared/entities/basePart.entity';
@@ -16,8 +16,7 @@ export class PhoneEntity extends BasePartOfEntity {
   @Expose()
   phone: string;
 
-  @ManyToOne(() => ContactEntity, ({ phones }) => phones)
-  @JoinColumn({ name: 'contactId', referencedColumnName: 'id' })
+  @ManyToOne(() => ContactEntity, ({ phones }) => phones, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @Expose()
-  contactId: string;
+  contact: ContactEntity;
 }

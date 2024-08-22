@@ -17,16 +17,16 @@ export class ContactsService {
 
   async findAll(): Promise<ContactEntity[] | NotFoundException> {
     try {
-      return await this.contactRepository.find();
+      return await this.contactRepository.find({ relations: ['phones'] });
     } catch (err) {
       console.warn(err);
-      return new NotFoundException('You are not get all contacts.');
+      return new NotFoundException('Contacts not found.');
     }
   }
 
   async findOneById(id: string): Promise<ContactEntity | NotFoundException> {
     try {
-      const contact = await this.contactRepository.findOneBy({ id });
+      const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
 
       if (!contact) {
         throw new NotFoundException(`Contact with id '${id}' not found.`);
@@ -44,16 +44,25 @@ export class ContactsService {
     try {
       const contact: ContactEntity = this.contactRepository.create({ lastName, firstName, street, houseNumber, city, postalCode });
 
-      contact.phones = phones.map((item) => {
-        const contactPhone = this.phoneRepository.create();
-        contactPhone.contactId = contact.id;
-        contactPhone.phone = item;
-        return contactPhone;
-      });
+      contact.phones = phones.map((phone) => this.phoneRepository.create({ phone, contact }));
 
       return await this.contactRepository.save(contact);
     } catch (err) {
       console.warn(err);
+    }
+  }
+
+  async removeById(id: string): Promise<ContactEntity | NotFoundException> {
+    try {
+      const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
+
+      if (!contact) {
+        throw new NotFoundException(`Contact with id '${id}' not found.`);
+      }
+
+      return await this.contactRepository.remove(contact);
+    } catch (err) {
+      return new NotFoundException(`Some error was occured: ${err}`);
     }
   }
 }

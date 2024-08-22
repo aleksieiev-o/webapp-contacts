@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { ContactsService } from './contacts.service';
 import { ContactEntity } from './entities/contact.entity';
 import { CreateContactDTO } from './dto/createContact.dto';
@@ -20,5 +20,10 @@ export class ContactsController {
   @Post('create')
   create(@Body() payload: CreateContactDTO): Promise<ContactEntity> {
     return this.contactsService.create(payload);
+  }
+
+  @Delete(':id')
+  removeById(@Param('id') id: string): Promise<ContactEntity | NotFoundException> {
+    return this.contactsService.removeById(id);
   }
 }
