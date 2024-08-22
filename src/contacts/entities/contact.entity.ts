@@ -44,7 +44,9 @@ export class ContactEntity extends BasePartOfEntity {
   @Expose()
   postalCode: string;
 
-  @OneToMany(() => PhoneEntity, ({ phone }) => phone)
+  @OneToMany(() => PhoneEntity, ({ phone }) => phone, {
+    cascade: true,
+  })
   @IsString({ each: true })
   @Expose()
   phones: PhoneEntity[];

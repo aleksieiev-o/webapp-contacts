@@ -19,5 +19,5 @@ export class PhoneEntity extends BasePartOfEntity {
   @ManyToOne(() => ContactEntity, ({ phones }) => phones)
   @JoinColumn({ name: 'contactId', referencedColumnName: 'id' })
   @Expose()
-  contact: ContactEntity;
+  contactId: string;
 }
