@@ -20,8 +20,7 @@ export class ContactsService {
     try {
       return await this.contactRepository.find({ relations: ['phones'] });
     } catch (err) {
-      console.warn(err);
-      return new NotFoundException('Contacts not found.');
+      return new NotFoundException('Contacts not found.', err);
     }
   }
 
@@ -29,13 +28,13 @@ export class ContactsService {
     return await this.findOneContactById(id);
   }
 
-  async create(payload: CreateContactDTO): Promise<ContactEntity> {
+  async create(payload: CreateContactDTO): Promise<ContactEntity | NotFoundException> {
     try {
       const contact = this.contactRepository.create(payload);
 
       return await this.contactRepository.save(contact);
     } catch (err) {
-      console.warn(err);
+      return new NotFoundException(`An error occurred: ${err}`, err);
     }
   }
 
@@ -50,21 +49,23 @@ export class ContactsService {
 
       Object.assign(currentContactToUpdate, { lastName, firstName, street, houseNumber, city, postalCode });
 
-      const updatedPhoneEntities = phones.map((item) => {
-        const existingPhones = currentContactToUpdate.phones.find((pn) => pn.phone === item.phone);
+      if (phones) {
+        const updatedPhoneEntities = phones.map((item) => {
+          const existingPhones = currentContactToUpdate.phones.find((pn) => pn.phone === item.phone);
 
-        if (existingPhones) {
-          return existingPhones;
-        }
+          if (existingPhones) {
+            return existingPhones;
+          }
 
-        return this.phoneRepository.create({ phone: item.phone });
-      });
+          return this.phoneRepository.create({ phone: item.phone });
+        });
 
-      currentContactToUpdate.phones = updatedPhoneEntities;
+        currentContactToUpdate.phones = updatedPhoneEntities;
+      }
 
       return await this.contactRepository.save(currentContactToUpdate);
     } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`);
+      return new NotFoundException(`An error occurred: ${err}`, err);
     }
   }
 
@@ -78,7 +79,7 @@ export class ContactsService {
 
       return await this.contactRepository.remove(contact);
     } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`);
+      return new NotFoundException(`An error occurred: ${err}`, err);
     }
   }
 
@@ -92,7 +93,7 @@ export class ContactsService {
 
       return contact;
     } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`);
+      return new NotFoundException(`An error occurred: ${err}`, err);
     }
   }
 }

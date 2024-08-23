@@ -8,6 +8,7 @@ import { UpdateContactDTO } from './dto/updateContact.dto';
 export class ContactsController {
   constructor(private contactsService: ContactsService) {}
 
+  // TODO NotFoundException has to change to more suitable exception type
   @Get()
   findAll(): Promise<ContactEntity[] | NotFoundException> {
     return this.contactsService.findAll();
@@ -19,7 +20,7 @@ export class ContactsController {
   }
 
   @Post('create')
-  create(@Body() payload: CreateContactDTO): Promise<ContactEntity> {
+  create(@Body() payload: CreateContactDTO): Promise<ContactEntity | NotFoundException> {
     return this.contactsService.create(payload);
   }
 
