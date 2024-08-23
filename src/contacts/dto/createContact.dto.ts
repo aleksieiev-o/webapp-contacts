@@ -1,5 +1,5 @@
-import { IsString, Length, IsNotEmpty, ArrayMinSize, IsArray } from 'class-validator';
-import { PhoneEntity } from '../entities/phone.entity';
+import {IsString, Length, IsNotEmpty, ArrayMinSize, IsArray} from 'class-validator';
+import {PhoneEntity} from '../entities/phone.entity';
 
 export class CreateContactDTO {
   @IsNotEmpty()

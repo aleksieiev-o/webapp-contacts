@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ContactEntity } from './entities/contact.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateContactDTO } from './dto/createContact.dto';
-import { UpdateContactDTO } from './dto/updateContact.dto';
-import { PhoneEntity } from './entities/phone.entity';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {ContactEntity} from './entities/contact.entity';
+import {Repository} from 'typeorm';
+import {InjectRepository} from '@nestjs/typeorm';
+import {CreateContactDTO} from './dto/createContact.dto';
+import {UpdateContactDTO} from './dto/updateContact.dto';
+import {PhoneEntity} from './entities/phone.entity';
 
 @Injectable()
 export class ContactsService {
@@ -18,7 +18,7 @@ export class ContactsService {
 
   async findAll(): Promise<ContactEntity[] | NotFoundException> {
     try {
-      return await this.contactRepository.find({ relations: ['phones'] });
+      return await this.contactRepository.find({relations: ['phones']});
     } catch (err) {
       return new NotFoundException('Contacts not found.', err);
     }
@@ -40,14 +40,14 @@ export class ContactsService {
 
   async update(id: string, payload: UpdateContactDTO): Promise<ContactEntity | NotFoundException> {
     try {
-      const { lastName, firstName, street, houseNumber, city, postalCode, phones } = payload;
-      const currentContactToUpdate = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
+      const {lastName, firstName, street, houseNumber, city, postalCode, phones} = payload;
+      const currentContactToUpdate = await this.contactRepository.findOne({where: {id}, relations: ['phones']});
 
       if (!currentContactToUpdate) {
         throw new NotFoundException(`Contact with id '${id}' not found.`);
       }
 
-      Object.assign(currentContactToUpdate, { lastName, firstName, street, houseNumber, city, postalCode });
+      Object.assign(currentContactToUpdate, {lastName, firstName, street, houseNumber, city, postalCode});
 
       if (phones) {
         const updatedPhoneEntities = phones.map((item) => {
@@ -57,7 +57,7 @@ export class ContactsService {
             return existingPhones;
           }
 
-          return this.phoneRepository.create({ phone: item.phone });
+          return this.phoneRepository.create({phone: item.phone});
         });
 
         currentContactToUpdate.phones = updatedPhoneEntities;
@@ -71,7 +71,7 @@ export class ContactsService {
 
   async removeById(id: string): Promise<ContactEntity | NotFoundException> {
     try {
-      const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
+      const contact = await this.contactRepository.findOne({where: {id}, relations: ['phones']});
 
       if (!contact) {
         throw new NotFoundException(`Contact with id '${id}' not found.`);
@@ -85,7 +85,7 @@ export class ContactsService {
 
   private async findOneContactById(id: string): Promise<ContactEntity | NotFoundException> {
     try {
-      const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
+      const contact = await this.contactRepository.findOne({where: {id}, relations: ['phones']});
 
       if (!contact) {
         throw new NotFoundException(`Contact with id '${id}' not found.`);

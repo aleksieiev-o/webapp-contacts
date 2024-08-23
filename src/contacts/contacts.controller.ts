@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { ContactsService } from './contacts.service';
-import { ContactEntity } from './entities/contact.entity';
-import { CreateContactDTO } from './dto/createContact.dto';
-import { UpdateContactDTO } from './dto/updateContact.dto';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put} from '@nestjs/common';
+import {ContactsService} from './contacts.service';
+import {ContactEntity} from './entities/contact.entity';
+import {CreateContactDTO} from './dto/createContact.dto';
+import {UpdateContactDTO} from './dto/updateContact.dto';
 
 @Controller('contacts')
 export class ContactsController {
