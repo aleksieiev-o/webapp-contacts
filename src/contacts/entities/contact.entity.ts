@@ -25,7 +25,6 @@ export class ContactEntity extends BasePartOfEntity {
 
   @OneToMany(() => PhoneEntity, ({ contact }) => contact, {
     cascade: true,
-    eager: true,
   })
   phones: PhoneEntity[];
 }

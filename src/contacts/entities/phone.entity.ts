@@ -8,6 +8,6 @@ export class PhoneEntity extends BasePartOfEntity {
   @Column({ type: 'varchar', length: 100 })
   phone: string;
 
-  @ManyToOne(() => ContactEntity, ({ phones }) => phones, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false, orphanedRowAction: 'delete' })
+  @ManyToOne(() => ContactEntity, ({ phones }) => phones, { onDelete: 'CASCADE', onUpdate: 'CASCADE', orphanedRowAction: 'delete' })
   contact: ContactEntity;
 }
