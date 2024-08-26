@@ -1,12 +1,13 @@
 module.exports = {
   semi: true,
-  trailingComma: 'all',
+  singleQuote: true,
   jsxSingleQuote: false,
   bracketSpacing: false,
-  singleQuote: true,
+  trailingComma: 'all',
   printWidth: 150,
   tabWidth: 2,
-  jsxBracketSameLine: false,
   arrowParens: 'always',
-  endOfLine: 'auto',
+  endOfLine: 'crlf',
+  // plugins: ['prettier-plugin-tailwindcss'],
+  tailwindConfig: './tailwind.config.js',
 };

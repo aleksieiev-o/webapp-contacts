@@ -67,3 +67,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  scrollbar-width: thin; /* "auto" or "thin" */
+  scrollbar-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0); /* scroll thumb and track */
+}
+.scrollbar {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  margin: 0;
+}
+*::-webkit-scrollbar-button:vertical:decrement {
+  background: rgba(0, 0, 0, 0);
+  height: 8px;
+}
+*::-webkit-scrollbar-button:vertical:increment {
+  background: rgba(0, 0, 0, 0);
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  min-height: 32px;
+  background: #999999;
+  border-radius: 2px;
+  background-clip: content-box;
+}
+
