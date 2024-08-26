@@ -1,6 +1,6 @@
-import {FC, PropsWithChildren, ReactElement} from 'react';
-import {Navigate, Outlet} from 'react-router-dom';
-import {ERouter} from '@/shared/router/index';
+import { FC, PropsWithChildren, ReactElement } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { ERouter } from '@/shared/router/index';
 
 interface Props extends PropsWithChildren {
   isAllowed: boolean;
@@ -8,7 +8,7 @@ interface Props extends PropsWithChildren {
 }
 
 const ProtectedRoute: FC<Props> = (props): ReactElement => {
-  const {isAllowed, redirectedPath, children} = props;
+  const { isAllowed, redirectedPath, children } = props;
 
   if (!isAllowed) {
     return <Navigate to={redirectedPath} replace={true} />;

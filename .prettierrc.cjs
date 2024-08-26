@@ -2,7 +2,7 @@ module.exports = {
   semi: true,
   trailingComma: 'all',
   jsxSingleQuote: false,
-  bracketSpacing: false,
+  bracketSpacing: true,
   singleQuote: true,
   printWidth: 150,
   tabWidth: 2,
@@ -10,3 +10,4 @@ module.exports = {
   arrowParens: 'always',
   endOfLine: 'crlf',
 };
+

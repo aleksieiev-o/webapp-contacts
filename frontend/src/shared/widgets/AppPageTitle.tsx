@@ -1,6 +1,6 @@
-import {FC, ReactElement, useMemo} from 'react';
-import {useLocation} from 'react-router-dom';
-import {ERouter, ERouterTitle} from '../router';
+import { FC, ReactElement, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
+import { ERouter, ERouterTitle } from '../router';
 
 const AppPageTitle: FC = (): ReactElement => {
   const location = useLocation();
@@ -16,8 +16,8 @@ const AppPageTitle: FC = (): ReactElement => {
   }, [location.pathname]);
 
   return (
-    <section className={'flex w-full flex-row items-center justify-between gap-4 overflow-hidden'}>
-      <h1 className={'text-3xl font-bold'}>{pageTitle}</h1>
+    <section className="flex w-full flex-row items-center justify-between gap-4 overflow-hidden">
+      <h1 className="text-3xl font-bold">{pageTitle}</h1>
     </section>
   );
 };

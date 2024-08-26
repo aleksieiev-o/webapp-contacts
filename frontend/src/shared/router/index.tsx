@@ -1,6 +1,6 @@
 import Contacts from '@/widgets/Contacts/Contacts';
 import Home from '@/widgets/Home/Home';
-import {createBrowserRouter, Navigate} from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 export enum ERouter {
   HOME = '/',
@@ -17,8 +17,8 @@ export enum ERouterTitle {
 }
 
 export const router = createBrowserRouter([
-  {path: ERouter.HOME, element: <Home />},
-  {path: ERouter.CONTACTS, element: <Contacts />},
+  { path: ERouter.HOME, element: <Home /> },
+  { path: ERouter.CONTACTS, element: <Contacts /> },
   // {path: ERouter.CONTACTS_CREATE, element: <ContactsCreate />},
   {
     path: ERouter.NOT_FOUND,
