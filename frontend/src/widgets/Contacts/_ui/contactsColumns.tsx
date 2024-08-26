@@ -1,5 +1,6 @@
 import { IContact } from '@/shared/types/Contact';
 import { IPhone } from '@/shared/types/Phone';
+import TableColumnHeaderWithSort from '@/shared/ui/AppTable/widgets/TableColumnHeaderWithSort';
 import { createColumnHelper, Row } from '@tanstack/react-table';
 
 export enum EContactTableColumnAccessorKeys {
@@ -25,11 +26,11 @@ export const contactsColumns = [
     ),
   }),
   columnHelper.accessor(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME, {
-    header: () => <div className="whitespace-nowrap text-start">First name</div>,
+    header: ({ column }) => <TableColumnHeaderWithSort columnName={'Firs name'} menuName={'Contacts sort'} column={column} />,
     cell: ({ row }) => <div className="text-start">{row.getValue(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME)}</div>,
   }),
   columnHelper.accessor(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME, {
-    header: () => <div className="whitespace-nowrap text-start">Last name</div>,
+    header: ({ column }) => <TableColumnHeaderWithSort columnName={'Last name'} menuName={'Contacts sort'} column={column} />,
     cell: ({ row }) => <div className="text-start">{row.getValue(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)}</div>,
   }),
   columnHelper.accessor(EContactTableColumnAccessorKeys.CONTACT_PHONES, {
