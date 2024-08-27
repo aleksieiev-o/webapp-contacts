@@ -1,23 +1,17 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
-  },
-  plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   root: true,
-  env: {
-    node: true,
-    jest: true,
+  env: { browser: true, es2020: true },
+  settings: {
+    react: { version: 'detect' },
   },
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:react-hooks/recommended', 'plugin:prettier/recommended'],
   ignorePatterns: ['dist', '.eslintrc.js', '.eslintrc.cjs'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh'],
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'prettier/prettier': ['warn', { endOfLine: 'auto' }],
     'prefer-const': 'warn',
     'no-empty': 0,
@@ -44,3 +38,4 @@ module.exports = {
     quotes: [2, 'single', { allowTemplateLiterals: true }],
   },
 };
+
