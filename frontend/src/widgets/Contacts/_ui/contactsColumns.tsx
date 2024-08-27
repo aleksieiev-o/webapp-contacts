@@ -50,7 +50,7 @@ export const contactsColumns = [
     cell: ({ row }) => (
       <>
         {getPhones(row).length > 0 ? (
-          <ScrollArea className={cn(getPhones(row).length > 1 ? 'h-20' : '', 'rounded-md')}>
+          <ScrollArea className={cn(getPhones(row).length > 1 ? 'h-[70px]' : '', 'rounded-md')}>
             <>
               {getPhones(row).map((item, _idx, arr) => (
                 <div key={item.id}>

@@ -1,15 +1,7 @@
 import { ERouter } from '@/shared/router';
-import {
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  ColumnFiltersState,
-  SortingState,
-} from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, ColumnFiltersState, SortingState } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
-import { FC, ReactElement, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useMemo, useState } from 'react';
 import { Input } from '@/components/shadcn/ui/input';
 import { Button } from '@/components/shadcn/ui/button';
 import { Plus } from 'lucide-react';
@@ -36,7 +28,6 @@ const ContactsTable: FC = (): ReactElement => {
     data: contactsIsSuccess ? contactsQueryData : [],
     columns: contactsColumns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -51,13 +42,17 @@ const ContactsTable: FC = (): ReactElement => {
     return contactsQueryData ? contactsQueryData.length : 0;
   }, [contactsQueryData]);
 
+  const customTableFilter = (event: ChangeEvent<HTMLInputElement>) => {
+    return table.getColumn(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME)?.setFilterValue(event.target.value);
+  };
+
   return (
     <div className="flex h-full w-full flex-col gap-6 py-6">
       <div className="flex w-full items-end justify-between gap-6 flex-row">
         <Input
-          onChange={(event) => table.getColumn(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)?.setFilterValue(event.target.value)}
+          onChange={(event) => customTableFilter(event)}
           disabled={!contactsQueryData || !contactsQueryData.length}
-          value={(table.getColumn(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME)?.getFilterValue() as string) ?? ''}
           placeholder="Contacts filter"
           title="Contacts filter"
           className="h-12 w-full"
