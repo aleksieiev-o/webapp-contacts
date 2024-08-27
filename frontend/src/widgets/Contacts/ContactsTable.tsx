@@ -9,7 +9,7 @@ import {
   SortingState,
 } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
-import { FC, ReactElement, useState } from 'react';
+import { FC, ReactElement, useMemo, useState } from 'react';
 import { Input } from '@/components/shadcn/ui/input';
 import { Button } from '@/components/shadcn/ui/button';
 import { Plus } from 'lucide-react';
@@ -47,6 +47,10 @@ const ContactsTable: FC = (): ReactElement => {
     },
   });
 
+  const listLength = useMemo<number>(() => {
+    return contactsQueryData ? contactsQueryData.length : 0;
+  }, [contactsQueryData]);
+
   return (
     <div className="flex h-full w-full flex-col gap-6 py-6">
       <div className="flex w-full items-end justify-between gap-6 flex-row">
@@ -67,7 +71,7 @@ const ContactsTable: FC = (): ReactElement => {
         </Link>
       </div>
 
-      <AppTable table={table} columns={contactsColumns} isPending={contactsIsPending} />
+      <AppTable table={table} columns={contactsColumns} isPending={contactsIsPending} isSuccess={contactsIsSuccess} listLength={listLength} />
     </div>
   );
 };
