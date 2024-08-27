@@ -15,7 +15,7 @@ const AppTable = <TData, TValue>(props: Props<TData, TValue>): ReactElement => {
   const { table, columns, isPending } = props;
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-auto">
       {isPending ? (
         <Skeleton className="h-[300px] w-full rounded-md border" />
       ) : (
