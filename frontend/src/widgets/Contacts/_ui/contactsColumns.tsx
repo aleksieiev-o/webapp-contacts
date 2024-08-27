@@ -5,6 +5,7 @@ import { createColumnHelper, Row } from '@tanstack/react-table';
 import ContactsTableRowActions from '../_widgets/ContactsTableRowActions';
 import { ScrollArea } from '@/components/shadcn/ui/scroll-area';
 import { Separator } from '@/components/shadcn/ui/separator';
+import { cn } from '@/lib/utils';
 
 export enum EContactTableColumnAccessorKeys {
   CONTACT_ID = 'id',
@@ -49,13 +50,13 @@ export const contactsColumns = [
     cell: ({ row }) => (
       <>
         {getPhones(row).length > 0 ? (
-          <ScrollArea className="h-20 rounded-md">
+          <ScrollArea className={cn(getPhones(row).length > 1 ? 'h-20' : '', 'rounded-md')}>
             <>
-              {getPhones(row).map((item) => (
+              {getPhones(row).map((item, _idx, arr) => (
                 <div key={item.id}>
                   <div className="md:max-w-40 max-w-28 overflow-hidden text-ellipsis whitespace-nowrap text-start">{item.phone}</div>
 
-                  <Separator className="my-2" />
+                  {arr.length > 1 && <Separator className="my-2" />}
                 </div>
               ))}
             </>
