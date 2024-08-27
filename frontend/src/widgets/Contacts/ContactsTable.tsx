@@ -48,7 +48,7 @@ const ContactsTable: FC = (): ReactElement => {
 
   return (
     <div className="flex h-full w-full flex-col gap-6 py-6">
-      <div className="flex w-full flex-col items-end justify-between gap-6 sm:flex-row sm:items-center">
+      <div className="flex w-full items-end justify-between gap-6 flex-row">
         <Input
           onChange={(event) => table.getColumn(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)?.setFilterValue(event.target.value)}
           disabled={!contactsQueryData || !contactsQueryData.length}
@@ -58,10 +58,10 @@ const ContactsTable: FC = (): ReactElement => {
           className="h-12 w-full"
         />
 
-        <Button variant="default" className="gap-4" title="Add contact">
+        <Button variant="default" className="gap-4" title="Create contact">
           <Plus className="h-5 w-5" />
 
-          <span>Add</span>
+          <span className="md:inline hidden">Create</span>
         </Button>
       </div>
 
