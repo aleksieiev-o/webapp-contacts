@@ -2,6 +2,7 @@ import { IContact } from '@/shared/types/Contact';
 import { IPhone } from '@/shared/types/Phone';
 import TableColumnHeaderWithSort from '@/shared/ui/AppTable/widgets/TableColumnHeaderWithSort';
 import { createColumnHelper, Row } from '@tanstack/react-table';
+import ContactsTableRowActions from '../_widgets/ContactsTableRowActions';
 
 export enum EContactTableColumnAccessorKeys {
   CONTACT_ID = 'id',
@@ -51,8 +52,8 @@ export const contactsColumns = [
       </ul>
     ),
   }),
-  // columnHelper.display({
-  //   id: 'actions',
-  //   cell: ({ row }) => <ContactTableRowActions row={row} />,
-  // }),
+  columnHelper.display({
+    id: 'actions',
+    cell: ({ row }) => <ContactsTableRowActions row={row} />,
+  }),
 ];
