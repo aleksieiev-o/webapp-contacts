@@ -10,6 +10,8 @@ const AppPageTitle: FC = (): ReactElement => {
       {
         [ERouter.HOME]: ERouterTitle.HOME,
         [ERouter.CONTACTS]: ERouterTitle.CONTACTS,
+        [ERouter.CONTACTS_CREATE]: ERouterTitle.CONTACTS_CREATE,
+        [ERouter.CONTACTS_UPDATE]: ERouterTitle.CONTACTS_UPDATE,
         [ERouter.NOT_FOUND]: ERouterTitle.NOT_FOUND,
       }[location.pathname] || 'Page title'
     );

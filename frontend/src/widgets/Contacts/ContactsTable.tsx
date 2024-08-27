@@ -16,6 +16,7 @@ import { Plus } from 'lucide-react';
 import { contactsColumns, EContactTableColumnAccessorKeys } from './_ui/contactsColumns';
 import AppTable from '@/shared/ui/AppTable/AppTable';
 import { fetchAllContacts } from '@/entities/contacts/contacts.service';
+import { Link } from 'react-router-dom';
 
 const ContactsTable: FC = (): ReactElement => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -58,11 +59,12 @@ const ContactsTable: FC = (): ReactElement => {
           className="h-12 w-full"
         />
 
-        <Button variant="default" className="gap-4" title="Create contact">
-          <Plus className="h-5 w-5" />
-
-          <span className="md:inline hidden">Create</span>
-        </Button>
+        <Link to={ERouter.CONTACTS_CREATE}>
+          <Button variant="default" className="gap-4" title="Create contact">
+            <Plus className="h-5 w-5" />
+            <span className="md:inline hidden">Create</span>
+          </Button>
+        </Link>
       </div>
 
       <AppTable table={table} columns={contactsColumns} isPending={contactsIsPending} />

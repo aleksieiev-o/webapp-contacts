@@ -15,6 +15,8 @@ import { IContact } from '@/shared/types/Contact';
 import ContactDetail from './ContactDetail';
 import { Badge } from '@/components/shadcn/ui/badge';
 import { parseDate } from '@/shared/utils/parceDate';
+import { Link } from 'react-router-dom';
+import { ERouter } from '@/shared/router';
 
 interface Props<TData> {
   dialogIsOpen: boolean;
@@ -25,10 +27,6 @@ interface Props<TData> {
 const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
   const { dialogIsOpen, setDialogIsOpen, row } = props;
   const { id, lastName, firstName, street, houseNumber, city, postalCode, phones, createdDate, updatedDate } = row.original as IContact;
-
-  const handleUpdate = () => {
-    setDialogIsOpen(false);
-  };
 
   return (
     <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
@@ -82,11 +80,12 @@ const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
             </Button>
           </DialogClose>
 
-          <Button onClick={handleUpdate} variant={'default'} title="Update contact" className="gap-4">
-            <Pencil className="h-5 w-5" />
-
-            <span>Update</span>
-          </Button>
+          <Link to={ERouter.CONTACTS_UPDATE}>
+            <Button variant={'default'} title="Update contact" className="gap-4">
+              <Pencil className="h-5 w-5" />
+              <span>Update</span>
+            </Button>
+          </Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -2,14 +2,16 @@ import { FC, ReactElement } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/shadcn/ui/dropdown-menu';
 import { Button } from '@/components/shadcn/ui/button';
 import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ERouter } from '@/shared/router';
 
 interface Props {
-  handlePrepareUpdate: () => void;
+  updateLink: ERouter;
   handlePrepareDelete: () => void;
 }
 
 const TableActionsDropdown: FC<Props> = (props): ReactElement => {
-  const { handlePrepareUpdate, handlePrepareDelete } = props;
+  const { updateLink, handlePrepareDelete } = props;
 
   return (
     <DropdownMenu>
@@ -22,10 +24,12 @@ const TableActionsDropdown: FC<Props> = (props): ReactElement => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-        <DropdownMenuItem onClick={handlePrepareUpdate} className={'flex flex-row items-center justify-start gap-4'}>
-          <Pencil className={'h-4 w-4'} />
-          Update
-        </DropdownMenuItem>
+        <Link to={updateLink}>
+          <DropdownMenuItem className={'flex flex-row items-center justify-start gap-4'}>
+            <Pencil className={'h-4 w-4'} />
+            Update
+          </DropdownMenuItem>
+        </Link>
 
         <DropdownMenuItem onClick={handlePrepareDelete} className={'flex flex-row items-center justify-start gap-4'}>
           <Trash className={'h-4 w-4'} />
