@@ -43,7 +43,7 @@ const ContactsTable: FC = (): ReactElement => {
   }, [contactsQueryData]);
 
   const customTableFilter = (event: ChangeEvent<HTMLInputElement>) => {
-    return table.getColumn(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME)?.setFilterValue(event.target.value);
+    return table.getColumn(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)?.setFilterValue(event.target.value);
   };
 
   return (
@@ -52,7 +52,7 @@ const ContactsTable: FC = (): ReactElement => {
         <Input
           onChange={(event) => customTableFilter(event)}
           disabled={!contactsQueryData || !contactsQueryData.length}
-          value={(table.getColumn(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME)?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)?.getFilterValue() as string) ?? ''}
           placeholder="Contacts filter"
           title="Contacts filter"
           className="h-12 w-full"
