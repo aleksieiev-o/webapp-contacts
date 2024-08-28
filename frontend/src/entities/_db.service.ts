@@ -34,7 +34,7 @@ export const updateDataItemById = async <T>(endpoint: EndpointsList, itemId: str
 };
 
 export const removeDataItemById = async <T>(endpoint: EndpointsList, itemId: string): Promise<T> => {
-  const response: Promise<AxiosResponse<T>> = apiClient.put(createDataItemEndpoint({ endpoint, itemId }));
+  const response: Promise<AxiosResponse<T>> = apiClient.delete(createDataItemEndpoint({ endpoint, itemId }));
   return response
     .then(({ data }) => data)
     .catch((err) => {
