@@ -5,6 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { FC, ReactElement } from 'react';
 import { useParams } from 'react-router-dom';
 import CreateUpdateContactForm from '../CreateUpdateContactForm/CreateUpdateContact.form';
+import { ERouterTitle } from '@/shared/router';
+import AppPageTitle from '@/shared/widgets/AppPageTitle';
 
 const UpdateContact: FC = (): ReactElement => {
   const { id } = useParams();
@@ -18,6 +20,8 @@ const UpdateContact: FC = (): ReactElement => {
   return (
     <AppWrapper>
       <AppScrollContentWrapper>
+        <AppPageTitle title={ERouterTitle.CONTACTS_UPDATE} />
+
         <CreateUpdateContactForm mode="update" contactQueryData={contactQueryData} contactIsPending={contactIsPending} />
       </AppScrollContentWrapper>
     </AppWrapper>
