@@ -1,5 +1,5 @@
-import { CreateContactDTO, IContact } from '@/shared/types/Contact';
-import { fetchAllData, fetchDataItemById, removeDataItemById } from '../_db.service';
+import { CreateContactDTO, IContact, UpdateContactDTO } from '@/shared/types/Contact';
+import { fetchAllData, fetchDataItemById, removeDataItemById, updateDataItemById } from '../_db.service';
 import { EndpointsList } from '@/shared/Endpoints.enum';
 import { AxiosResponse } from 'axios';
 import { apiClient } from '../_api/apiClient';
@@ -38,6 +38,10 @@ export const createContact = async (payload: CreateContactDTO): Promise<IContact
       console.warn(err);
       return Promise.reject(err);
     });
+};
+
+export const updateContact = async (id: string, payload: UpdateContactDTO): Promise<IContact> => {
+  return (await updateDataItemById(EndpointsList.CONTACT_BY_ID, id, payload)) as IContact;
 };
 
 export const removeContactById = async (id: string): Promise<IContact> => {

@@ -14,3 +14,5 @@ export interface IContact extends IBasePartOfEntity {
 }
 
 export interface CreateContactDTO extends Omit<IContact, keyof IBasePartOfEntity> {}
+
+export interface UpdateContactDTO extends Partial<CreateContactDTO> {}

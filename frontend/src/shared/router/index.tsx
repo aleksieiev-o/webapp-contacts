@@ -8,7 +8,7 @@ export enum ERouter {
   HOME = '/',
   CONTACTS = '/contacts',
   CONTACTS_CREATE = '/contacts/create',
-  CONTACTS_UPDATE = '/contacts/update',
+  CONTACTS_UPDATE = '/contacts/update/:id',
   NOT_FOUND = '*',
 }
 

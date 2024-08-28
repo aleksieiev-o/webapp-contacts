@@ -1,27 +1,35 @@
 import { Form } from '@/components/shadcn/ui/form';
 import { useToast } from '@/components/shadcn/ui/use-toast';
-import { createContact } from '@/entities/contacts/contacts.service';
+import { createContact, updateContact } from '@/entities/contacts/contacts.service';
 import { useLoading } from '@/shared/hooks/useLoading';
 import { ERouter } from '@/shared/router';
-import { CreateContactDTO } from '@/shared/types/Contact';
+import { CreateContactDTO, IContact } from '@/shared/types/Contact';
 import GoToPreviousPageButton from '@/shared/ui/appButton/GoToPreviousPage.button';
 import SubmitButton from '@/shared/ui/appButton/Submit.button';
 import AppFormInputText from '@/shared/ui/appInput/AppFormInput.text';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FC, ReactElement, useId, useMemo } from 'react';
+import { FC, ReactElement, useEffect, useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PhonesListForm from './_widgets/PhonesList.form';
 import { CreatePhoneDTO } from '@/shared/types/Phone';
 
-const CreateContactForm: FC = (): ReactElement => {
+interface Props {
+  mode: 'create' | 'update';
+  contactQueryData?: IContact;
+  contactIsPending?: boolean;
+}
+
+const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
+  const { mode, contactQueryData } = props;
   const formID = useId();
   const { toast } = useToast();
   const { isLoading, setIsLoading } = useLoading();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const phoneSchema = useMemo(
     () =>
@@ -96,12 +104,27 @@ const CreateContactForm: FC = (): ReactElement => {
     resolver: zodResolver(contactSchema),
   });
 
+  useEffect(() => {
+    if (mode === 'update' && contactQueryData) {
+      const contactDTO: CreateContactDTO = {
+        lastName: contactQueryData.lastName,
+        firstName: contactQueryData.firstName,
+        street: contactQueryData.street,
+        houseNumber: contactQueryData.houseNumber,
+        city: contactQueryData.city,
+        postalCode: contactQueryData.postalCode,
+        phones: contactQueryData.phones,
+      };
+      formModel.reset(contactDTO);
+    }
+  }, [contactQueryData, formModel, mode]);
+
   const onSuccessCallback = async (): Promise<void> => {
     await queryClient.invalidateQueries({
       queryKey: [ERouter.CONTACTS],
     });
 
-    const description = 'You have successfully created a new contact.';
+    const description = mode === 'create' ? 'You have successfully created a new contact.' : 'You have successfully updated this contact.';
     toast({ title: 'Success', description });
 
     formModel.reset();
@@ -131,7 +154,9 @@ const CreateContactForm: FC = (): ReactElement => {
   });
 
   const mutationCreateOrUpdate = useMutation({
-    mutationFn: async (values: CreateContactDTO) => await createContact(createContactData(values)),
+    mutationFn: async (values: CreateContactDTO) =>
+      mode === 'create' ? await createContact(createContactData(values)) : await updateContact(id!, createContactData(values)),
+
     onSuccess: async () => {
       await onSuccessCallback();
     },
@@ -236,10 +261,16 @@ const CreateContactForm: FC = (): ReactElement => {
       </Form>
 
       <div className={'flex w-full flex-row items-center justify-start gap-4'}>
-        <SubmitButton formId={formID} title={'Create'} btnBody={'Create'} isLoading={isLoading} disabled={isLoading} />
+        <SubmitButton
+          formId={formID}
+          title={mode === 'create' ? 'Create' : 'Update'}
+          btnBody={mode === 'create' ? 'Create' : 'Update'}
+          isLoading={isLoading}
+          disabled={isLoading}
+        />
       </div>
     </section>
   );
 };
 
-export default CreateContactForm;
+export default CreateUpdateContactForm;

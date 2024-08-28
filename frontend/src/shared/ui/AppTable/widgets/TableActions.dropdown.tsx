@@ -3,10 +3,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from '@/components/shadcn/ui/button';
 import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ERouter } from '@/shared/router';
 
 interface Props {
-  updateLink: ERouter;
+  updateLink: string;
   handlePrepareRemove: () => void;
 }
 
