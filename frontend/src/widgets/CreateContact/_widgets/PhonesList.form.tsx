@@ -105,7 +105,7 @@ const PhonesListForm: FC<Props> = (props): ReactElement => {
         </Button>
       </div>
 
-      <div className="w-full flex flex-row flex-nowrap items-center justify-start gap-2">
+      <div className="w-full max-h-[55px] flex flex-row flex-wrap items-center justify-start gap-2 overflow-y-auto">
         {phonesList.map((item, idx) => (
           <Badge key={`${idx}_${item.phone}`} variant="info" className="gap-4" title={item.phone}>
             <span>{item.phone}</span>
@@ -115,7 +115,7 @@ const PhonesListForm: FC<Props> = (props): ReactElement => {
               type="button"
               variant="ghost"
               size="icon"
-              className="h-5 w-5"
+              className="h-4 w-4 rounded-full"
               title="Remove phone from phones list"
             >
               <X className="h-3 w-3" />

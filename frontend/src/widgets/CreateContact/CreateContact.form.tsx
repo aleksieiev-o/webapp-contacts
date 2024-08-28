@@ -235,7 +235,7 @@ const CreateContactForm: FC = (): ReactElement => {
         </form>
       </Form>
 
-      <div className={'flex w-full flex-row items-center justify-end gap-4'}>
+      <div className={'flex w-full flex-row items-center justify-start gap-4'}>
         <SubmitButton formId={formID} title={'Create'} btnBody={'Create'} isLoading={isLoading} disabled={isLoading} />
       </div>
     </section>
