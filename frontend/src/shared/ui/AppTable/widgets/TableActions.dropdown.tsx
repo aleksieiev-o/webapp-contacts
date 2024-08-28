@@ -3,15 +3,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from '@/components/shadcn/ui/button';
 import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ERouter } from '@/shared/router';
 
 interface Props {
-  updateLink: ERouter;
-  handlePrepareDelete: () => void;
+  updateLink: string;
+  handlePrepareRemove: () => void;
 }
 
 const TableActionsDropdown: FC<Props> = (props): ReactElement => {
-  const { updateLink, handlePrepareDelete } = props;
+  const { updateLink, handlePrepareRemove } = props;
 
   return (
     <DropdownMenu>
@@ -31,7 +30,7 @@ const TableActionsDropdown: FC<Props> = (props): ReactElement => {
           </DropdownMenuItem>
         </Link>
 
-        <DropdownMenuItem onClick={handlePrepareDelete} className={'flex flex-row items-center justify-start gap-4'}>
+        <DropdownMenuItem onClick={handlePrepareRemove} className={'flex flex-row items-center justify-start gap-4'}>
           <Trash className={'h-4 w-4'} />
           Remove
         </DropdownMenuItem>

@@ -1,25 +1,16 @@
-import { FC, ReactElement, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
-import { ERouter, ERouterTitle } from '../router';
+import { FC, ReactElement } from 'react';
+import { ERouterTitle } from '../router';
 
-const AppPageTitle: FC = (): ReactElement => {
-  const location = useLocation();
+interface Props {
+  title: ERouterTitle;
+}
 
-  const pageTitle = useMemo(() => {
-    return (
-      {
-        [ERouter.HOME]: ERouterTitle.HOME,
-        [ERouter.CONTACTS]: ERouterTitle.CONTACTS,
-        [ERouter.CONTACTS_CREATE]: ERouterTitle.CONTACTS_CREATE,
-        [ERouter.CONTACTS_UPDATE]: ERouterTitle.CONTACTS_UPDATE,
-        [ERouter.NOT_FOUND]: ERouterTitle.NOT_FOUND,
-      }[location.pathname] || 'Page title'
-    );
-  }, [location.pathname]);
+const AppPageTitle: FC<Props> = (props): ReactElement => {
+  const { title } = props;
 
   return (
     <section className="flex w-full flex-row items-center justify-between gap-4 overflow-hidden">
-      <h1 className="text-3xl font-bold">{pageTitle}</h1>
+      <h1 className="text-3xl font-bold">{title}</h1>
     </section>
   );
 };

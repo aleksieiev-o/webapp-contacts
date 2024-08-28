@@ -17,6 +17,7 @@ import { Badge } from '@/components/shadcn/ui/badge';
 import { parseDate } from '@/shared/utils/parceDate';
 import { Link } from 'react-router-dom';
 import { ERouter } from '@/shared/router';
+import { useMemo } from 'react';
 
 interface Props<TData> {
   dialogIsOpen: boolean;
@@ -27,6 +28,11 @@ interface Props<TData> {
 const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
   const { dialogIsOpen, setDialogIsOpen, row } = props;
   const { id, lastName, firstName, street, houseNumber, city, postalCode, phones, createdDate, updatedDate } = row.original as IContact;
+
+  const updateContactLink = useMemo(() => {
+    const pathname = ERouter.CONTACTS_UPDATE.split(':')[0];
+    return `${pathname}${id}`;
+  }, [id]);
 
   return (
     <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
@@ -61,8 +67,8 @@ const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
 
             {phones.length > 0 ? (
               <div className="w-full flex flex-row flex-wrap items-center justify-start gap-2 overflow-y-auto">
-                {phones.map((item) => (
-                  <Badge key={item.id} variant="info" title={item.phone}>
+                {phones.map((item, idx) => (
+                  <Badge key={`${idx}_${item.phone}`} variant="info" title={item.phone}>
                     {item.phone}
                   </Badge>
                 ))}
@@ -80,7 +86,7 @@ const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
             </Button>
           </DialogClose>
 
-          <Link to={ERouter.CONTACTS_UPDATE}>
+          <Link to={updateContactLink}>
             <Button variant={'default'} title="Update contact" className="gap-4">
               <Pencil className="h-5 w-5" />
               <span>Update</span>

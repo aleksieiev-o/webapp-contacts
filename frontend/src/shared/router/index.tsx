@@ -1,5 +1,5 @@
 import Contacts from '@/widgets/Contacts/Contacts';
-import UpdateContact from '@/widgets/Contacts/UpdateContact/UpdateContact';
+import UpdateContact from '@/widgets/UpdateContact/UpdateContact';
 import CreateContact from '@/widgets/CreateContact/CreateContact';
 import Home from '@/widgets/Home/Home';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ export enum ERouter {
   HOME = '/',
   CONTACTS = '/contacts',
   CONTACTS_CREATE = '/contacts/create',
-  CONTACTS_UPDATE = '/contacts/update',
+  CONTACTS_UPDATE = '/contacts/update/:id',
   NOT_FOUND = '*',
 }
 
