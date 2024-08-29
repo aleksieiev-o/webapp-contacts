@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IAppFormInput {
   mode: 'input' | 'textarea';
-  formModel: unknown;
+  formModel: any;
   type: 'text' | 'email' | 'password' | 'number';
   name: string;
   label: string;

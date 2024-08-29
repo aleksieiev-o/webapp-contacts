@@ -22,15 +22,15 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_USER_NAME=root
 DB_USER_PASSWORD=root
-DB_NAME=contactsDatabase
+DB_NAME=contactsdatabase
 ```
 
 - Install the database MariaDB on your local mashine;
 
-- Create a database named `contactsDatabase`:
+- Create a database named `contactsdatabase`:
 
 ```
-CREATE DATABASE contactsDatabase;
+CREATE DATABASE contactsdatabase;
 ```
 
 - Create database columns. Change the flag `synchronize: false` in the `DatabaseModule` to `true`, to create automatic all columns form entities. Return then the flag to `false`, to avoid the database errors.

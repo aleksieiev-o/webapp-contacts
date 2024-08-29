@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "build:all": "npm run build && cd frontend && npm run build",
     "lint:all": "npm run lint && cd frontend && npm run lint",
     "lint:all:fix": "npm run format && cd frontend && npm run lint:fix"
