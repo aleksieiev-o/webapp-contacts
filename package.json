@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "build:all": "npm run build && cd frontend && npm run build",
     "lint:all": "npm run lint && cd frontend && npm run lint",
     "lint:all:fix": "npm run format && cd frontend && npm run lint:fix"
@@ -33,6 +33,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cross-env": "^7.0.3",
+    "cross-var": "^1.1.0",
     "mariadb": "^3.3.1",
     "mysql2": "^3.11.0",
     "reflect-metadata": "^0.2.0",

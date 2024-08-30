@@ -1,0 +1,66 @@
+networks:
+  tsa_oa:
+
+services:
+  database:
+    container_name: 'database-container'
+    image: mariadb:lts
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=contactsdatabase
+    expose:
+      - 3306
+    ports:
+      - '3307:3306'
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: ['CMD', 'healthcheck.sh', '--su-mysql', '--connect', '--innodb_initialized']
+      timeout: 30s
+    networks:
+      - tsa_oa
+    volumes:
+      - ./mariadb_database:/var/lib/mysql:rw
+
+  backend:
+    container_name: 'backend-container'
+    restart: always
+    environment:
+      - DB_USER_NAME=root
+      - DB_USER_PASSWORD=root
+      - DB_NAME=contactsdatabase
+      - DB_HOST=database
+      - DB_PORT=3306
+      - HOST=0.0.0.0
+      - PORT=3000
+    build:
+      dockerfile: Dockerfile
+      context: '.'
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - /node_modules
+      - ./backend:/backend
+    ports:
+      - '3000:3000'
+    networks:
+      - tsa_oa
+
+  fronted:
+    container_name: 'fronted-container'
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: './frontend'
+    depends_on:
+      - backend
+    volumes:
+      - /fronted/node_modules
+      - ./fronted:/usr/src/app
+    ports:
+      - '80:80'
+    networks:
+      - tsa_oa
