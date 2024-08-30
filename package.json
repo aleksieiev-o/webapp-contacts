@@ -21,11 +21,7 @@
     "prepare": "husky || true",
     "build:all": "npm run build && cd frontend && npm run build",
     "lint:all": "npm run lint && cd frontend && npm run lint",
-    "lint:all:fix": "npm run format && cd frontend && npm run lint:fix",
-    "typeorm": "typeorm-ts-node-esm",
-    "migration:create": "cross-var ts-node node_modules/typeorm/cli.js migration:create ./src/database/migrations/$npm_config_name",
-    "migrate": "ts-node node_modules/typeorm/cli.js migration:run -d src/shared/utils/dataSource.ts",
-    "migration:down": "ts-node node_modules/typeorm/cli.js migration:revert -d src/shared/utils/dataSource.ts"
+    "lint:all:fix": "npm run format && cd frontend && npm run lint:fix"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
