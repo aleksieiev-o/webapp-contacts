@@ -6,11 +6,10 @@ services:
     container_name: 'database-container'
     image: mariadb:lts
     restart: always
-    # secrets:
-    #   - db-password
     environment:
       - NODE_ENV=production
       - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=contactsdatabase
     expose:
       - 3306
     ports:
@@ -20,10 +19,10 @@ services:
       retries: 3
       test: ['CMD', 'healthcheck.sh', '--su-mysql', '--connect', '--innodb_initialized']
       timeout: 30s
-    # volumes:
-    #   - db-data:/var/lib/mysql
     networks:
       - tsa_oa
+    volumes:
+      - ./mariadb_database:/var/lib/mysql:rw
 
   backend:
     container_name: 'backend-container'
@@ -44,7 +43,7 @@ services:
         condition: service_healthy
     volumes:
       - /node_modules
-      - .:/backend
+      - ./backend:/backend
     ports:
       - '3000:3000'
     networks:
@@ -65,8 +64,3 @@ services:
       - '80:80'
     networks:
       - tsa_oa
-  # volumes:
-  #   db-data:
-  # secrets:
-  #   db-password:
-  #     file: db/password.txt
