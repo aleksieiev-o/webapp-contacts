@@ -31,7 +31,7 @@ const AppInputText: FC<Props> = (props): ReactElement => {
           ) : (
             <Input
               onChange={(e) => handleOnChange(e.target.value)}
-              value={value}
+              value={value || ''}
               placeholder={placeholder}
               aria-required={required}
               type={type}
@@ -47,7 +47,7 @@ const AppInputText: FC<Props> = (props): ReactElement => {
           ) : (
             <Textarea
               onChange={(e) => handleOnChange(e.target.value)}
-              value={value}
+              value={value || ''}
               placeholder={placeholder}
               aria-required={required}
               disabled={disabled}
