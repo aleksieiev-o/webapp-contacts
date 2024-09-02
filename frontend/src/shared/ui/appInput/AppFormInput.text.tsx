@@ -27,7 +27,7 @@ const AppFormInputText: FC<IAppFormInput> = (props): ReactElement => {
                 {isDataPending ? (
                   <Skeleton className={'h-12 w-full'} />
                 ) : (
-                  <Input placeholder={placeholder} aria-required={required} type={type} disabled={disabled} {...field} />
+                  <Input placeholder={placeholder} aria-required={required} type={type} disabled={disabled} {...field} value={field.value || ''} />
                 )}
               </>
             ) : (
@@ -35,7 +35,7 @@ const AppFormInputText: FC<IAppFormInput> = (props): ReactElement => {
                 {isDataPending ? (
                   <Skeleton className={'min-h-[80px] w-full'} />
                 ) : (
-                  <Textarea placeholder={placeholder} aria-required={required} disabled={disabled} {...field} />
+                  <Textarea placeholder={placeholder} aria-required={required} disabled={disabled} {...field} value={field.value || ''} />
                 )}
               </>
             )}

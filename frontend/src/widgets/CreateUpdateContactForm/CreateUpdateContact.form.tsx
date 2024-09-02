@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PhonesListForm from './_widgets/PhonesList.form';
 import { CreatePhoneDTO } from '@/shared/types/Phone';
+import { transformNullToUndefined } from '@/shared/utils/transformDatabaseValues';
 
 interface Props {
   mode: 'create' | 'update';
@@ -69,7 +70,8 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
               invalid_type_error: 'Value must be a string',
             })
             .trim()
-            .max(255, 'Value must not exceed 255 characters'),
+            .max(255, 'Value must not exceed 255 characters')
+            .transform((val) => (val.length === 0 ? undefined : val)),
         ),
         houseNumber: z.optional(
           z
@@ -77,7 +79,8 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
               invalid_type_error: 'Value must be a string',
             })
             .trim()
-            .max(50, 'Value must not exceed 50 characters'),
+            .max(50, 'Value must not exceed 50 characters')
+            .transform((val) => (val.length === 0 ? undefined : val)),
         ),
         city: z.optional(
           z
@@ -85,7 +88,8 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
               invalid_type_error: 'Value must be a string',
             })
             .trim()
-            .max(100, 'Value must not exceed 100 characters'),
+            .max(100, 'Value must not exceed 100 characters')
+            .transform((val) => (val.length === 0 ? undefined : val)),
         ),
         postalCode: z.optional(
           z
@@ -93,7 +97,8 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
               invalid_type_error: 'Value must be a string',
             })
             .trim()
-            .max(5, 'Value must not exceed 5 characters'),
+            .max(5, 'Value must not exceed 5 characters')
+            .transform((val) => (val.length === 0 ? undefined : val)),
         ),
         phones: z.array(phoneSchema).min(1, 'List must contain at least 1 value'),
       }),
@@ -109,10 +114,10 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
       const contactDTO: CreateContactDTO = {
         lastName: contactQueryData.lastName,
         firstName: contactQueryData.firstName,
-        street: contactQueryData.street,
-        houseNumber: contactQueryData.houseNumber,
-        city: contactQueryData.city,
-        postalCode: contactQueryData.postalCode,
+        street: transformNullToUndefined(contactQueryData.street),
+        houseNumber: transformNullToUndefined(contactQueryData.houseNumber),
+        city: transformNullToUndefined(contactQueryData.city),
+        postalCode: transformNullToUndefined(contactQueryData.postalCode),
         phones: contactQueryData.phones,
       };
       formModel.reset(contactDTO);
