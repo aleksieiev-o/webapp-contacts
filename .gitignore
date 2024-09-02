@@ -3,7 +3,8 @@
 /node_modules
 /build
 
-/mariadb_database
+# Docker volumes
+/docker_volume
 
 # Logs
 logs

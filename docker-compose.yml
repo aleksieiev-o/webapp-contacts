@@ -22,7 +22,7 @@ services:
     networks:
       - tsa_oa
     volumes:
-      - ./mariadb_database:/var/lib/mysql:rw
+      - ./docker_volume/database:/var/lib/mysql:rw
 
   backend:
     container_name: 'backend-container'
@@ -43,14 +43,14 @@ services:
         condition: service_healthy
     volumes:
       - /node_modules
-      - ./backend:/backend
+      - ./docker_volume/backend:/backend
     ports:
       - '3000:3000'
     networks:
       - tsa_oa
 
-  fronted:
-    container_name: 'fronted-container'
+  frontend:
+    container_name: 'frontend-container'
     restart: always
     build:
       dockerfile: Dockerfile
@@ -58,8 +58,8 @@ services:
     depends_on:
       - backend
     volumes:
-      - /fronted/node_modules
-      - ./fronted:/usr/src/app
+      - /frontend/node_modules
+      - ./docker_volume/frontend:/usr/src/app
     ports:
       - '80:80'
     networks:
