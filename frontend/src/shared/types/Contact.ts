@@ -1,5 +1,5 @@
 import { IBasePartOfEntity } from './BasePartOfEntity';
-import { CreatePhoneDTO } from './Phone';
+import { IPhone } from './Phone';
 
 export interface IContact extends IBasePartOfEntity {
   id: string;
@@ -10,7 +10,7 @@ export interface IContact extends IBasePartOfEntity {
   houseNumber?: string;
   city?: string;
   postalCode?: string;
-  phones: CreatePhoneDTO[];
+  phones: Omit<IPhone, keyof IBasePartOfEntity>[];
 }
 
 export interface CreateContactDTO extends Omit<IContact, keyof IBasePartOfEntity> {}
