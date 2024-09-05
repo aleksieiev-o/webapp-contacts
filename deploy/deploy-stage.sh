@@ -25,11 +25,82 @@ cd ~/tsa/education/2024/webapp-contacts/stage
 echo Stopping docker stack...
 sudo docker compose down
 
+# renew the docker-compose file to current
+echo Deleteing docker-compose.yaml...
+rm -f docker-compose.yaml
+
+echo Creating docker-compose.yaml...
+cat << EOF > docker-compose.yaml
+version: '3'
+
+networks:
+  tsa_oa:
+
+services:
+  database:
+    container_name: 'database-container'
+    image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
+    restart: unless-stopped
+    env_file:
+      - path: .deployment.env
+        required: true
+    expose:
+      - 3306
+    ports:
+      - '3307:3306'
+    networks:
+      - tsa_oa
+    volumes:
+      - ./docker_volume/database:/var/lib/mysql:rw
+
+  backend:
+    image: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
+    restart: unless-stopped
+    env_file:
+      - path: .deployment.env
+        required: true
+    depends_on:
+      - database
+    volumes:
+      - /node_modules
+      - ./docker_volume/backend:/backend
+    ports:
+      - '4000:4000'
+    networks:
+      - tsa_oa
+
+  frontend:
+    image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
+    restart: unless-stopped
+    env_file:
+      - path: .deployment.env
+        required: true
+    depends_on:
+      - backend
+    volumes:
+      - /frontend/node_modules
+      - ./docker_volume/frontend:/usr/src/app
+    ports:
+      - '80:80'
+    networks:
+      - tsa_oa
+EOF
+
 echo Creating .env file ...
 cat << EOF > .deployment.env
 
 DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL
 DOCKER_REGISTRY_AUTH=$DOCKER_REGISTRY_AUTH
+HOST=0.0.0.0
+PORT=4000
+DB_HOST=database
+DB_PORT=3306
+DB_USER_NAME=root
+DB_USER_PASSWORD=root
+DB_NAME=contactsdatabase
+MARIADB_ROOT_PASSWORD=root
+MARIADB_DATABASE=contactsdatabase
+VITE_API_URL=http://localhost:4000
 
 EOF
 
