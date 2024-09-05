@@ -21,13 +21,15 @@ mkdir -p ~/tsa/education/2024/webapp-contacts/stage/docs_cache
 # Move into Stage folder
 cd ~/tsa/education/2024/webapp-contacts/stage
 
-# First shutdown old docker compose stack
-echo Stopping docker stack...
-sudo docker compose down
+if [ -f "docker-compose.yaml" ]; then
+    # First shutdown old docker compose stack
+    echo Stopping docker stack...
+    sudo docker compose down
 
-# renew the docker-compose file to current
-echo Deleteing docker-compose.yaml...
-rm -f docker-compose.yaml
+    # renew the docker-compose file to current
+    echo Deleteing docker-compose.yaml...
+    rm -f docker-compose.yaml
+fi
 
 echo Creating docker-compose.yaml...
 cat << EOF > docker-compose.yaml
