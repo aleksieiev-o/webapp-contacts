@@ -1,32 +1,71 @@
+variables:
+  IMAGE_NAME: crtpdev.azurecr.io/tsa/education/2024/contacts-
+  IMAGE_NAME_BACKEND: backend
+  IMAGE_NAME_FRONTEND: frontend
+
+.default_build_scripts_backend: &default_build_scripts_backend
+  - docker build -t ${IMAGE_NAME}${IMAGE_NAME_BACKEND} -f ./Dockerfile .
+  - docker push ${IMAGE_NAME}${IMAGE_NAME_BACKEND}
+  - docker rmi ${IMAGE_NAME}${IMAGE_NAME_BACKEND}
+
+.default_build_scripts_frontend: &default_build_scripts_frontend
+  - docker build -t ${IMAGE_NAME}${IMAGE_NAME_FRONTEND} -f ./frontend/Dockerfile ./frontend
+  - docker push ${IMAGE_NAME}${IMAGE_NAME_FRONTEND}
+  - docker rmi ${IMAGE_NAME}${IMAGE_NAME_FRONTEND}
+
+.docker_login: &docker_login
+  - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+
 stages:
   - build
+  - deploy
 
 include:
-  - project: "teleport/ci-cd/ci-scripts"
+  - project: 'teleport/ci-cd/ci-scripts'
     ref: master
-    file: "before-script.yml"
+    file: 'before-script.yml'
 
 backend_build:
   stage: build
   rules:
-  - if: $CI_COMMIT_TAG != null
-  - if: $CI_PIPELINE_SOURCE == "web"
-  - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_TAG != null
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == "dev"
   script:
-    - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t "crtpdev.azurecr.io/tsa/education/2024/contacts-backend" -f ./Dockerfile .
-    - docker push "crtpdev.azurecr.io/tsa/education/2024/contacts-backend"
-    - docker rmi crtpdev.azurecr.io/tsa/education/2024/contacts-backend
+    - *docker_login
+    - *default_build_scripts_backend
 
 frontend_build:
   stage: build
   rules:
-  - if: $CI_COMMIT_TAG != null
-  - if: $CI_PIPELINE_SOURCE == "web"
-  - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_TAG != null
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == "dev"
   script:
-    - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t "crtpdev.azurecr.io/tsa/education/2024/contacts-frontend" -f ./frontend/Dockerfile ./frontend
-    - docker push "crtpdev.azurecr.io/tsa/education/2024/contacts-frontend"
-    - docker rmi crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
+    - *docker_login
+    - *default_build_scripts_frontend
 
+deploy_stage:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: manual
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: on_success
+  script:
+    - *docker_login
+    - *default_build_scripts_backend
+    - *default_build_scripts_frontend
+
+    - mkdir -p ~/.ssh
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_IDENTITY_FILE" | tr -d '\r' | ssh-add -
+
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - >
+      ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage.sh
+      "CI_REGISTRY_USER='$CI_REGISTRY_USER'"
+      "CI_REGISTRY_PASSWORD='$CI_REGISTRY_PASSWORD'"
+      "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
+      "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"

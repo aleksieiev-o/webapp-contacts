@@ -4,12 +4,12 @@ networks:
 services:
   database:
     container_name: 'database-container'
-    image: mariadb:lts
+    image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
+    # image: mariadb:lts
     restart: always
-    environment:
-      - NODE_ENV=production
-      - MARIADB_ROOT_PASSWORD=root
-      - MARIADB_DATABASE=contactsdatabase
+    env_file:
+      - path: .env.production
+        required: true
     expose:
       - 3306
     ports:
@@ -27,14 +27,9 @@ services:
   backend:
     container_name: 'backend-container'
     restart: always
-    environment:
-      - DB_USER_NAME=root
-      - DB_USER_PASSWORD=root
-      - DB_NAME=contactsdatabase
-      - DB_HOST=database
-      - DB_PORT=3306
-      - HOST=0.0.0.0
-      - PORT=3000
+    env_file:
+      - path: .env.production
+        required: true
     build:
       dockerfile: Dockerfile
       context: '.'
@@ -45,13 +40,16 @@ services:
       - /node_modules
       - ./docker_volume/backend:/backend
     ports:
-      - '3000:3000'
+      - '4000:4000'
     networks:
       - tsa_oa
 
   frontend:
     container_name: 'frontend-container'
     restart: always
+    env_file:
+      - path: frontend/.env.production
+        required: true
     build:
       dockerfile: Dockerfile
       context: './frontend'

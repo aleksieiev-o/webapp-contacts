@@ -5,47 +5,75 @@
 ##### Here are the recommended steps, to start the project on your local machine:
 
 - Clone this repository to your local machine;
+
 - Install the database MariaDB on your local machine;
+
 - Install all dependencies:
 
-	```
-	npm install && cd frontend/ && npm install
-	```
+  ```
+  npm install && cd frontend/ && npm install
+  ```
 
-- Create the `env.development.local` file in the root folder with the following keys and values:
+- Create the `.env.development.local` file in the root folder with the following keys and values:
 
-	```
-	HOST=0.0.0.0
-	PORT=3000
+  ```
+  HOST=0.0.0.0
+  PORT=3000
 
-	DB_HOST=localhost
-	DB_PORT=3306
-	DB_USER_NAME=root
-	DB_USER_PASSWORD=root
-	DB_NAME=contactsdatabase
-	MARIADB_ROOT_PASSWORD=root
-	MARIADB_DATABASE=contactsdatabase
+  DB_HOST=localhost
+  DB_PORT=3306
+  DB_USER_NAME=root
+  DB_USER_PASSWORD=root
+  DB_NAME=contactsdatabase
+  MARIADB_ROOT_PASSWORD=root
+  MARIADB_DATABASE=contactsdatabase
+  ```
 
-	VITE_API_URL=0.0.0.0:3000
-	```
+- Create the `.env.development.local` file in the `frontend` folder with the following keys and values:
+
+  ```
+  VITE_API_URL=http://localhost:3000
+  ```
 
 - Run the both parts of the project locally in development mode:
 
-	```
-	npm run start:dev
-	npm run dev
-	```
+  ```
+  npm run start:dev
+  npm run dev
+  ```
 
 - The database will be created automatic with name `contactsdatabase`;
 
-##### Here are the recommended steps, to create and start the project in a docker container:
+##### Here are the recommended steps, to create and start the project in a docker container on your local machine:
 
 - Clone this repository to your local machine;
+
+- Create the `.env.production` file in the root folder with the following keys and values:
+
+  ```
+  HOST=0.0.0.0
+  PORT=4000
+
+  DB_HOST=database
+  DB_PORT=3306
+  DB_USER_NAME=root
+  DB_USER_PASSWORD=root
+  DB_NAME=contactsdatabase
+  MARIADB_ROOT_PASSWORD=root
+  MARIADB_DATABASE=contactsdatabase
+  ```
+
+- Create the `.env.production` file in the `frontend` folder with the following keys and values:
+
+  ```
+  VITE_API_URL=http://localhost:4000
+  ```
+
 - Run this command in the root folder of the project:
 
-	```
-	docker compose up --build -d
-	```
+  ```
+  docker compose up --build -d
+  ```
 
 - It will be created three docker images with database, backend and frontend parts in the container with name `webapp-contacts`.
 
