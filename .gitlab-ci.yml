@@ -12,7 +12,7 @@ variables:
 
 .default_build_scripts_frontend: &default_build_scripts_frontend
   - docker build -t ${IMAGE_NAME_FRONTEND} -f ./frontend/Dockerfile ./frontend
-  - docker push {IMAGE_NAME_FRONTEND}
+  - docker push ${IMAGE_NAME_FRONTEND}
   - docker rmi ${IMAGE_NAME_FRONTEND}
 
 .stage_build_scripts_backend: &stage_build_scripts_backend
@@ -22,7 +22,7 @@ variables:
 
 .stage_build_scripts_frontend: &stage_build_scripts_frontend
   - docker build -t ${IMAGE_NAME_FRONTEND}:${TAG} -f ./frontend/Dockerfile ./frontend
-  - docker push {IMAGE_NAME_FRONTEND}:${TAG}
+  - docker push ${IMAGE_NAME_FRONTEND}:${TAG}
   - docker rmi ${IMAGE_NAME_FRONTEND}:${TAG}
 
 stages:
