@@ -16,7 +16,7 @@ variables:
   - docker rmi ${IMAGE_NAME_FRONTEND}
 
 .stage_build_scripts_backend: &stage_build_scripts_backend
-  - docker build --build-arg VITE_API_URL=http://49.12.194.89:4000 -t ${IMAGE_NAME_BACKEND}:${TAG} -f ./Dockerfile .
+  - docker build -t ${IMAGE_NAME_BACKEND}:${TAG} -f ./Dockerfile .
   - docker push ${IMAGE_NAME_BACKEND}:${TAG}
   - docker rmi ${IMAGE_NAME_BACKEND}:${TAG}
 

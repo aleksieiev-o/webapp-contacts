@@ -47,7 +47,7 @@ services:
     container_name: 'frontend-container'
     restart: always
     env_file:
-      - path: frontend/.env.production
+      - path: .env.production
         required: true
     build:
       dockerfile: Dockerfile
