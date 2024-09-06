@@ -33,8 +33,6 @@ fi
 
 echo Creating docker-compose.yaml...
 cat << EOF > docker-compose.yaml
-version: '3'
-
 networks:
   tsa_oa:
 

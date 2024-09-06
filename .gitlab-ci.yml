@@ -54,6 +54,8 @@ deploy_stage:
       when: on_success
   script:
     - *docker_login
+    - *default_build_scripts_backend
+    - *default_build_scripts_frontend
 
     - mkdir -p ~/.ssh
     - eval "$(ssh-agent -s)"
