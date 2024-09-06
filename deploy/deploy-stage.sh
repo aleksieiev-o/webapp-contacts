@@ -71,8 +71,6 @@ services:
   frontend:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend:stage-latest
     restart: unless-stopped
-    environment:
-      - VITE_API_URL=http://49.12.194.89:4000
     depends_on:
       - backend
     volumes:
