@@ -100,14 +100,14 @@ MARIADB_ROOT_PASSWORD=root
 MARIADB_DATABASE=contactsdatabase
 EOF
 
-mkdir -p ~/tsa/education/2024/webapp-contacts/stage/frontend
-cd ~/tsa/education/2024/webapp-contacts/stage/frontend
+mkdir -p frontend
+cd frontend/
 
 cat << EOF > .env.deployment
 VITE_API_URL=http://49.12.194.89:4000
 EOF
 
-cd ~/tsa/education/2024/webapp-contacts/stage
+cd ../
 
 # finally start the stack back up again,
 # quiet pull to not spam console with thousands of lines with Pulling image
