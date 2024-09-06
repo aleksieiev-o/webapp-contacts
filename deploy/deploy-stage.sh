@@ -75,7 +75,10 @@ services:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://localhost:4000
+      VITE_API_URL: 'http://localhost:4000'
+    env_file:
+      - path:.deployment.env
+        required: true
     depends_on:
       - backend
     volumes:
@@ -101,6 +104,7 @@ DB_USER_PASSWORD=root
 DB_NAME=contactsdatabase
 MARIADB_ROOT_PASSWORD=root
 MARIADB_DATABASE=contactsdatabase
+VITE_API_URL=http://localhost:4000
 
 EOF
 
