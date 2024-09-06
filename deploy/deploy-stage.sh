@@ -41,7 +41,7 @@ services:
     image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
     restart: unless-stopped
     env_file:
-      - path: .env.deployment
+      - path: .deployment.env
         required: true
     expose:
       - 3306
@@ -56,7 +56,7 @@ services:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-backend:stage-latest
     restart: unless-stopped
     env_file:
-      - path: .env.deployment
+      - path: .deployment.env
         required: true
     depends_on:
       - database
@@ -85,7 +85,7 @@ services:
 EOF
 
 echo Creating .env file ...
-cat << EOF > .env.deployment
+cat << EOF > .deployment.env
 DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL
 DOCKER_REGISTRY_AUTH=$DOCKER_REGISTRY_AUTH
 HOST=0.0.0.0
