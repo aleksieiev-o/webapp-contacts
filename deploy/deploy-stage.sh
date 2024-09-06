@@ -1,7 +1,7 @@
 # Quit this script, if any non-zero exit code is returned
 set -e
 
-echo Parsing Arguments...
+echo Parsing deploy arguments...
 
 # https://unix.stackexchange.com/a/353639
 for ARGUMENT in "$@"
@@ -13,10 +13,6 @@ do
 
    export "$KEY"="$VALUE"
 done
-
-# Create Cache and stage folder
-echo Creating Folders...
-mkdir -p ~/tsa/education/2024/webapp-contacts/stage/docs_cache
 
 # Move into Stage folder
 cd ~/tsa/education/2024/webapp-contacts/stage
@@ -72,7 +68,7 @@ services:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend:stage-latest
     restart: unless-stopped
     env_file:
-      - path: .env.production
+      - path: frontend/.env.production
         required: true
     depends_on:
       - backend
@@ -83,22 +79,6 @@ services:
       - '80:80'
     networks:
       - tsa_oa
-EOF
-
-echo Creating .env file ...
-cat << EOF > .env.production
-DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL
-DOCKER_REGISTRY_AUTH=$DOCKER_REGISTRY_AUTH
-HOST=0.0.0.0
-PORT=4000
-DB_HOST=database
-DB_PORT=3306
-DB_USER_NAME=root
-DB_USER_PASSWORD=root
-DB_NAME=contactsdatabase
-MARIADB_ROOT_PASSWORD=root
-MARIADB_DATABASE=contactsdatabase
-VITE_API_URL=http://49.12.194.89:4000
 EOF
 
 # finally start the stack back up again,
