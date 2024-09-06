@@ -71,9 +71,8 @@ services:
   frontend:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend:stage-latest
     restart: unless-stopped
-    env_file:
-      - path: frontend/.env.deployment
-        required: true
+    variables:
+      - VITE_API_URL=http://49.12.194.89:4000
     depends_on:
       - backend
     volumes:
@@ -99,15 +98,6 @@ DB_NAME=contactsdatabase
 MARIADB_ROOT_PASSWORD=root
 MARIADB_DATABASE=contactsdatabase
 EOF
-
-mkdir -p frontend
-cd frontend/
-
-cat << EOF > .env.deployment
-VITE_API_URL=http://49.12.194.89:4000
-EOF
-
-cd ../
 
 # finally start the stack back up again,
 # quiet pull to not spam console with thousands of lines with Pulling image
