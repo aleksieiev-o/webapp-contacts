@@ -38,11 +38,10 @@ networks:
 
 services:
   database:
-    container_name: 'database-container'
     image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
     restart: unless-stopped
     env_file:
-      - path: .deployment.env
+      - path: .env.deployment
         required: true
     expose:
       - 3306
@@ -54,10 +53,10 @@ services:
       - ./docker_volume/database:/var/lib/mysql:rw
 
   backend:
-    image: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
+    image: crtpdev.azurecr.io/tsa/education/2024/contacts-backend:stage-latest
     restart: unless-stopped
     env_file:
-      - path: .deployment.env
+      - path: .env.deployment
         required: true
     depends_on:
       - database
@@ -70,12 +69,10 @@ services:
       - tsa_oa
 
   frontend:
-    image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
+    image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend:stage-latest
     restart: unless-stopped
-    environment:
-      VITE_API_URL: 'http://localhost:4000'
     env_file:
-      - path: .deployment.env
+      - path: frontend/.env.deployment
         required: true
     depends_on:
       - backend
@@ -89,7 +86,7 @@ services:
 EOF
 
 echo Creating .env file ...
-cat << EOF > .deployment.env
+cat << EOF > .env.deployment
 
 DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL
 DOCKER_REGISTRY_AUTH=$DOCKER_REGISTRY_AUTH
@@ -102,7 +99,13 @@ DB_USER_PASSWORD=root
 DB_NAME=contactsdatabase
 MARIADB_ROOT_PASSWORD=root
 MARIADB_DATABASE=contactsdatabase
-VITE_API_URL=http://localhost:4000
+
+EOF
+
+echo Creating .env file ...
+cat << EOF > frontend/.env.deployment
+
+VITE_API_URL=http://49.12.194.89:4000
 
 EOF
 
