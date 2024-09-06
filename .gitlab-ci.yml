@@ -30,6 +30,8 @@ backend_build:
     - if: $CI_COMMIT_TAG != null
     - if: $CI_PIPELINE_SOURCE == "web"
     - if: $CI_COMMIT_BRANCH == "dev"
+      variables:
+        TAG: 'latest'
   script:
     - *docker_login
     - *default_build_scripts_backend
@@ -40,6 +42,8 @@ frontend_build:
     - if: $CI_COMMIT_TAG != null
     - if: $CI_PIPELINE_SOURCE == "web"
     - if: $CI_COMMIT_BRANCH == "dev"
+      variables:
+        TAG: 'latest'
   script:
     - *docker_login
     - *default_build_scripts_frontend
