@@ -87,7 +87,6 @@ EOF
 
 echo Creating .env file ...
 cat << EOF > .env.deployment
-
 DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL
 DOCKER_REGISTRY_AUTH=$DOCKER_REGISTRY_AUTH
 HOST=0.0.0.0
@@ -99,15 +98,16 @@ DB_USER_PASSWORD=root
 DB_NAME=contactsdatabase
 MARIADB_ROOT_PASSWORD=root
 MARIADB_DATABASE=contactsdatabase
-
 EOF
 
-echo Creating .env file ...
-cat << EOF > frontend/.env.deployment
+mkdir -p ~/tsa/education/2024/webapp-contacts/stage/frontend
+cd ~/tsa/education/2024/webapp-contacts/stage/frontend
 
+cat << EOF > .env.deployment
 VITE_API_URL=http://49.12.194.89:4000
-
 EOF
+
+cd ~/tsa/education/2024/webapp-contacts/stage
 
 # finally start the stack back up again,
 # quiet pull to not spam console with thousands of lines with Pulling image
