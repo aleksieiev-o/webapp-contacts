@@ -65,8 +65,8 @@ deploy_stage:
       when: manual
     - if: $CI_COMMIT_BRANCH == "dev"
       when: on_success
-      variables:
-        TAG: 'stage-latest'
+  variables:
+    TAG: 'stage-latest'
   script:
     - *docker_login
     - *stage_build_scripts_backend
