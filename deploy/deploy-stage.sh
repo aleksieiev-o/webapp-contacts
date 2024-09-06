@@ -77,7 +77,7 @@ services:
     environment:
       VITE_API_URL: 'http://localhost:4000'
     env_file:
-      - path:.deployment.env
+      - path: .deployment.env
         required: true
     depends_on:
       - backend
