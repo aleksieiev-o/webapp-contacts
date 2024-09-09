@@ -64,15 +64,20 @@ deploy_stage:
       "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
       "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"
 
-    - export $(cat ~/tsa/education/2024/webapp-contacts/stage/.env.production | xargs)
-    - export $(cat ~/tsa/education/2024/webapp-contacts/stage/frontend/.env.production | xargs)
-
     - *docker_login
 
+    - echo "CAT ENV"
+    - cat ./.env.production
+    - echo "CAT DOCKERFILE"
+    - cat ./Dockerfile
     - docker build -t ${IMAGE_NAME_BACKEND}:${TAG} -f ./Dockerfile .
     - docker push ${IMAGE_NAME_BACKEND}:${TAG}
     - docker rmi ${IMAGE_NAME_BACKEND}:${TAG}
 
+    - echo "CAT ENV"
+    - cat ./frontend/.env.production
+    - echo "CAT DOCKERFILE"
+    - cat ./frontend/Dockerfile
     - docker build -t ${IMAGE_NAME_FRONTEND}:${TAG} -f ./frontend/Dockerfile ./frontend
     - docker push ${IMAGE_NAME_FRONTEND}:${TAG}
     - docker rmi ${IMAGE_NAME_FRONTEND}:${TAG}
