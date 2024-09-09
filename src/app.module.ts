@@ -7,7 +7,7 @@ import { ContactsModule } from './contacts/contacts.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.development.local', '.env.production'],
+      envFilePath: ['.env.development.local', '.env'],
     }),
     DatabaseModule,
     ContactsModule,

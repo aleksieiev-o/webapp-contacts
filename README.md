@@ -48,7 +48,7 @@
 
 - Clone this repository to your local machine;
 
-- Create the `.env.production` file in the root folder with the following keys and values:
+- Create the `.env` file in the root folder with the following keys and values:
 
   ```
   HOST=0.0.0.0
@@ -63,7 +63,7 @@
   MARIADB_DATABASE=contactsdatabase
   ```
 
-- Create the `.env.production` file in the `frontend` folder with the following keys and values:
+- Create the `.env` file in the `frontend` folder with the following keys and values:
 
   ```
   VITE_API_URL=http://localhost:4000

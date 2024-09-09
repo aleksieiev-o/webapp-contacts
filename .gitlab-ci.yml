@@ -49,8 +49,6 @@ deploy_stage:
       when: manual
     - if: $CI_COMMIT_BRANCH == "dev"
       when: on_success
-  variables:
-    TAG: 'stage-latest'
   script:
     - mkdir -p ~/.ssh
     - eval "$(ssh-agent -s)"
@@ -60,29 +58,8 @@ deploy_stage:
     - chmod 644 ~/.ssh/known_hosts
 
     - >
-      ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/pre-deploy-stage.sh
+      ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage.sh
       "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
       "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"
-
-    - *docker_login
-
-    - echo "CAT ENV"
-    - cat ./.env.production
-    - echo "CAT DOCKERFILE"
-    - cat ./Dockerfile
-    - docker build -t ${IMAGE_NAME_BACKEND}:${TAG} -f ./Dockerfile .
-    - docker push ${IMAGE_NAME_BACKEND}:${TAG}
-    - docker rmi ${IMAGE_NAME_BACKEND}:${TAG}
-
-    - echo "CAT ENV"
-    - cat ./frontend/.env.production
-    - echo "CAT DOCKERFILE"
-    - cat ./frontend/Dockerfile
-    - docker build -t ${IMAGE_NAME_FRONTEND}:${TAG} -f ./frontend/Dockerfile ./frontend
-    - docker push ${IMAGE_NAME_FRONTEND}:${TAG}
-    - docker rmi ${IMAGE_NAME_FRONTEND}:${TAG}
-
-    - >
-      ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage.sh
       "CI_REGISTRY_USER='$CI_REGISTRY_USER'"
       "CI_REGISTRY_PASSWORD='$CI_REGISTRY_PASSWORD'"

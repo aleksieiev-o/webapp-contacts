@@ -4,10 +4,11 @@ networks:
 services:
   database:
     container_name: 'database-container'
-    image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
+    # image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
+    image: mariadb:lts
     restart: always
     env_file:
-      - path: .env.production
+      - path: .env
         required: true
     expose:
       - 3306
@@ -27,7 +28,7 @@ services:
     container_name: 'backend-container'
     restart: always
     env_file:
-      - path: .env.production
+      - path: .env
         required: true
     build:
       dockerfile: Dockerfile
@@ -46,9 +47,6 @@ services:
   frontend:
     container_name: 'frontend-container'
     restart: always
-    env_file:
-      - path: frontend/.env.production
-        required: true
     build:
       dockerfile: Dockerfile
       context: './frontend'
@@ -58,6 +56,6 @@ services:
       - /frontend/node_modules
       - ./docker_volume/frontend:/usr/src/app
     ports:
-      - '80:80'
+      - '8080:80'
     networks:
       - tsa_oa
