@@ -5,26 +5,6 @@ variables:
 .docker_login: &docker_login
   - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 
-.default_build_scripts_backend: &default_build_scripts_backend
-  - docker build -t ${IMAGE_NAME_BACKEND} -f ./Dockerfile .
-  - docker push ${IMAGE_NAME_BACKEND}
-  - docker rmi ${IMAGE_NAME_BACKEND}
-
-.default_build_scripts_frontend: &default_build_scripts_frontend
-  - docker build -t ${IMAGE_NAME_FRONTEND} -f ./frontend/Dockerfile ./frontend
-  - docker push ${IMAGE_NAME_FRONTEND}
-  - docker rmi ${IMAGE_NAME_FRONTEND}
-
-.stage_build_scripts_backend: &stage_build_scripts_backend
-  - docker build -t ${IMAGE_NAME_BACKEND}:${TAG} -f ./Dockerfile .
-  - docker push ${IMAGE_NAME_BACKEND}:${TAG}
-  - docker rmi ${IMAGE_NAME_BACKEND}:${TAG}
-
-.stage_build_scripts_frontend: &stage_build_scripts_frontend
-  - docker build -t ${IMAGE_NAME_FRONTEND}:${TAG} -f ./frontend/Dockerfile ./frontend
-  - docker push ${IMAGE_NAME_FRONTEND}:${TAG}
-  - docker rmi ${IMAGE_NAME_FRONTEND}:${TAG}
-
 stages:
   - build
   - deploy
@@ -42,7 +22,9 @@ backend_build:
     - if: $CI_COMMIT_BRANCH == "dev"
   script:
     - *docker_login
-    - *default_build_scripts_backend
+    - docker build -t ${IMAGE_NAME_BACKEND} -f ./Dockerfile .
+    - docker push ${IMAGE_NAME_BACKEND}
+    - docker rmi ${IMAGE_NAME_BACKEND}
 
 frontend_build:
   stage: build
@@ -52,7 +34,9 @@ frontend_build:
     - if: $CI_COMMIT_BRANCH == "dev"
   script:
     - *docker_login
-    - *default_build_scripts_frontend
+    - docker build -t ${IMAGE_NAME_FRONTEND} -f ./frontend/Dockerfile ./frontend
+    - docker push ${IMAGE_NAME_FRONTEND}
+    - docker rmi ${IMAGE_NAME_FRONTEND}
 
 deploy_stage:
   stage: deploy
@@ -80,9 +64,18 @@ deploy_stage:
       "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
       "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"
 
+    - export $(cat .env.production | xargs)
+    - export $(cat ./frontend/.env.production | xargs)
+
     - *docker_login
-    - *stage_build_scripts_backend
-    - *stage_build_scripts_frontend
+
+    - docker build -t ${IMAGE_NAME_BACKEND}:${TAG} -f ./Dockerfile .
+    - docker push ${IMAGE_NAME_BACKEND}:${TAG}
+    - docker rmi ${IMAGE_NAME_BACKEND}:${TAG}
+
+    - docker build -t ${IMAGE_NAME_FRONTEND}:${TAG} -f ./frontend/Dockerfile ./frontend
+    - docker push ${IMAGE_NAME_FRONTEND}:${TAG}
+    - docker rmi ${IMAGE_NAME_FRONTEND}:${TAG}
 
     - >
       ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage.sh
