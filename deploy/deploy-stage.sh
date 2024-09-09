@@ -1,7 +1,7 @@
 # Quit this script, if any non-zero exit code is returned
 set -e
 
-echo Parsing Arguments...
+echo Parsing deploy arguments...
 
 # https://unix.stackexchange.com/a/353639
 for ARGUMENT in "$@"
@@ -14,9 +14,9 @@ do
    export "$KEY"="$VALUE"
 done
 
-# Create Cache and stage folder
-echo Creating Folders...
-mkdir -p ~/tsa/education/2024/webapp-contacts/stage/docs_cache
+# Create stage folders
+echo Creating folder...
+mkdir -p ~/tsa/education/2024/webapp-contacts/stage
 
 # Move into Stage folder
 cd ~/tsa/education/2024/webapp-contacts/stage
@@ -38,11 +38,10 @@ networks:
 
 services:
   database:
-    container_name: 'database-container'
     image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
     restart: unless-stopped
     env_file:
-      - path: .deployment.env
+      - path: .env
         required: true
     expose:
       - 3306
@@ -57,7 +56,7 @@ services:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
     restart: unless-stopped
     env_file:
-      - path: .deployment.env
+      - path: .env
         required: true
     depends_on:
       - database
@@ -72,25 +71,19 @@ services:
   frontend:
     image: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
     restart: unless-stopped
-    environment:
-      VITE_API_URL: 'http://localhost:4000'
-    env_file:
-      - path: .deployment.env
-        required: true
     depends_on:
       - backend
     volumes:
       - /frontend/node_modules
       - ./docker_volume/frontend:/usr/src/app
     ports:
-      - '80:80'
+      - '8080:80'
     networks:
       - tsa_oa
 EOF
 
 echo Creating .env file ...
-cat << EOF > .deployment.env
-
+cat << EOF > .env
 DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL
 DOCKER_REGISTRY_AUTH=$DOCKER_REGISTRY_AUTH
 HOST=0.0.0.0
@@ -102,8 +95,6 @@ DB_USER_PASSWORD=root
 DB_NAME=contactsdatabase
 MARIADB_ROOT_PASSWORD=root
 MARIADB_DATABASE=contactsdatabase
-VITE_API_URL=http://localhost:4000
-
 EOF
 
 # finally start the stack back up again,
@@ -114,4 +105,5 @@ echo "Pulling new Docker Images"
 sudo docker compose pull --quiet
 echo "Starting Docker Stage"
 sudo docker compose up --quiet-pull -d
+
 sudo docker logout crtpdev.azurecr.io
