@@ -41,10 +41,6 @@ frontend_build:
 deploy_stage:
   stage: deploy
   rules:
-    # TODO delete this
-    - if: $CI_COMMIT_TAG != null
-    - if: $CI_PIPELINE_SOURCE == "web"
-    # TODO delete this
     - if: $CI_COMMIT_BRANCH == "dev"
       when: manual
     - if: $CI_COMMIT_BRANCH == "dev"
