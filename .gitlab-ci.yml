@@ -64,8 +64,8 @@ deploy_stage:
       "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
       "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"
 
-    - export $(cat .env.production | xargs)
-    - export $(cat ./frontend/.env.production | xargs)
+    - export $(cat ~/tsa/education/2024/webapp-contacts/stage/.env.production | xargs)
+    - export $(cat ~/tsa/education/2024/webapp-contacts/stage/frontend/.env.production | xargs)
 
     - *docker_login
 
