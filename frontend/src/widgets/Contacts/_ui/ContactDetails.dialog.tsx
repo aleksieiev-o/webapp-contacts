@@ -47,7 +47,7 @@ const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
           <DialogTitle>Contact details</DialogTitle>
 
           <DialogDescription>
-            Here you can see contact details of the contact <br />
+            Here you can see details of the contact <br />
             <span className="font-bold">{id}</span>
           </DialogDescription>
         </DialogHeader>

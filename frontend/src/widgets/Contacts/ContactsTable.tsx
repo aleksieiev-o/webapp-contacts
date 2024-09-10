@@ -1,20 +1,18 @@
 import { ERouter } from '@/shared/router';
-import { useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, ColumnFiltersState, SortingState } from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, SortingState } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
 import { FC, ReactElement, useMemo, useState } from 'react';
 import { Input } from '@/components/shadcn/ui/input';
 import { Button } from '@/components/shadcn/ui/button';
 import { Plus } from 'lucide-react';
-import { contactsColumns, EContactTableColumnAccessorKeys } from './_ui/contactsColumns';
+import { contactsColumns } from './_ui/contactsColumns';
 import AppTable from '@/shared/ui/AppTable/AppTable';
 import { fetchAllContacts } from '@/entities/contacts/contacts.service';
 import { Link } from 'react-router-dom';
-import AppTableNoteFilterSelect from '@/shared/ui/AppTable/_ui/AppTableNoteFilter.select';
 
 const ContactsTable: FC = (): ReactElement => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [filteredColumn, setFilteredColumn] = useState<EContactTableColumnAccessorKeys>(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME);
+  const [columnFilters, setColumnFilters] = useState<string>('');
 
   const {
     data: contactsQueryData,
@@ -32,11 +30,11 @@ const ContactsTable: FC = (): ReactElement => {
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onGlobalFilterChange: setColumnFilters,
     state: {
       sorting,
-      columnFilters,
+      globalFilter: columnFilters,
     },
   });
 
@@ -48,24 +46,20 @@ const ContactsTable: FC = (): ReactElement => {
     <div className="flex h-full w-full flex-col gap-6 py-6">
       <div className="flex w-full items-end justify-between gap-6 flex-row">
         <Input
-          onChange={(event) => table.getColumn(filteredColumn)?.setFilterValue(event.target.value)}
+          onChange={(event) => setColumnFilters(event.target.value)}
           disabled={!contactsQueryData || !contactsQueryData.length}
-          value={(table.getColumn(filteredColumn)?.getFilterValue() as string) ?? ''}
+          value={columnFilters}
           placeholder="Contacts filter"
           title="Contacts filter"
           className="h-12 w-full"
         />
 
-        <div className="flex w-full flex-col items-end gap-6 xs:flex-row sm:w-auto">
-          <AppTableNoteFilterSelect table={table} setFilteredColumn={setFilteredColumn} />
-
-          <Link to={ERouter.CONTACTS_CREATE}>
-            <Button variant="default" className="gap-4" title="Create contact">
-              <Plus className="h-5 w-5" />
-              <span className="md:inline hidden">Create</span>
-            </Button>
-          </Link>
-        </div>
+        <Link to={ERouter.CONTACTS_CREATE}>
+          <Button variant="default" className="gap-4" title="Create contact">
+            <Plus className="h-5 w-5" />
+            <span className="md:inline hidden">Create</span>
+          </Button>
+        </Link>
       </div>
 
       <AppTable table={table} columns={contactsColumns} isPending={contactsIsPending} isSuccess={contactsIsSuccess} listLength={listLength} />

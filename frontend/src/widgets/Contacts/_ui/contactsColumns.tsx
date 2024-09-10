@@ -28,6 +28,7 @@ export const contactsColumns = [
         {row.getValue(EContactTableColumnAccessorKeys.CONTACT_ID)}
       </div>
     ),
+    enableGlobalFilter: false,
   }),
   columnHelper.accessor(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME, {
     header: ({ column }) => <TableColumnHeaderWithSort columnName={'Firs name'} menuName={'Contacts sort'} column={column} />,
@@ -36,6 +37,7 @@ export const contactsColumns = [
         {row.getValue(EContactTableColumnAccessorKeys.CONTACT_FIRST_NAME)}
       </div>
     ),
+    enableGlobalFilter: true,
   }),
   columnHelper.accessor(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME, {
     header: ({ column }) => <TableColumnHeaderWithSort columnName={'Last name'} menuName={'Contacts sort'} column={column} />,
@@ -44,6 +46,7 @@ export const contactsColumns = [
         {row.getValue(EContactTableColumnAccessorKeys.CONTACT_LAST_NAME)}
       </div>
     ),
+    enableGlobalFilter: true,
   }),
   columnHelper.accessor(EContactTableColumnAccessorKeys.CONTACT_PHONES, {
     header: () => <div className="whitespace-nowrap text-start">Phones</div>,
