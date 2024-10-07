@@ -46,7 +46,7 @@ services:
     expose:
       - 3306
     ports:
-      - '3307:3306'
+      - '127.0.0.1:3307:3306'
     networks:
       - tsa_oa
     volumes:
@@ -64,7 +64,7 @@ services:
       - /node_modules
       - ./docker_volume/backend:/backend
     ports:
-      - '4000:4000'
+      - '127.0.0.1:4000:4000'
     networks:
       - tsa_oa
 
@@ -77,7 +77,7 @@ services:
       - /frontend/node_modules
       - ./docker_volume/frontend:/usr/src/app
     ports:
-      - '8080:80'
+      - '127.0.0.1:8080:80'
     networks:
       - tsa_oa
 EOF
@@ -90,11 +90,11 @@ HOST=0.0.0.0
 PORT=4000
 DB_HOST=database
 DB_PORT=3306
-DB_USER_NAME=root
-DB_USER_PASSWORD=root
-DB_NAME=contactsdatabase
-MARIADB_ROOT_PASSWORD=root
-MARIADB_DATABASE=contactsdatabase
+DB_USER_NAME=$DB_USER
+DB_USER_PASSWORD=$DB_PASSWORD
+DB_NAME=$DB_NAME
+MARIADB_ROOT_PASSWORD=$DB_ROOTPASSWORD
+MARIADB_DATABASE=$DB_NAME
 EOF
 
 # finally start the stack back up again,

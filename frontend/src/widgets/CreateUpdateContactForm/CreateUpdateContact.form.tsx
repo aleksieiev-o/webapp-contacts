@@ -14,8 +14,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PhonesListForm from './_widgets/PhonesList.form';
-import { CreatePhoneDTO } from '@/shared/types/Phone';
 import { transformNullToUndefined } from '@/shared/utils/transformDatabaseValues';
+import { createContactValidation } from './_validations/createContact.validation';
 
 interface Props {
   mode: 'create' | 'update';
@@ -32,78 +32,7 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const phoneSchema = useMemo(
-    () =>
-      z.object({
-        phone: z
-          .string({
-            invalid_type_error: 'Value must be a string',
-          })
-          .trim()
-          .max(100, 'Value must not exceed 100 characters'),
-      }),
-    [],
-  );
-
-  const contactSchema = useMemo(
-    () =>
-      z.object({
-        lastName: z
-          .string({
-            required_error: 'Field is required',
-            invalid_type_error: 'Value must be a string',
-          })
-          .trim()
-          .min(3, 'Value must be at least 3 characters')
-          .max(100, 'Value must not exceed 100 characters'),
-        firstName: z
-          .string({
-            required_error: 'Field is required',
-            invalid_type_error: 'Value must be a string',
-          })
-          .trim()
-          .min(3, 'Value must be at least 3 characters')
-          .max(100, 'Value must not exceed 100 characters'),
-        street: z.optional(
-          z
-            .string({
-              invalid_type_error: 'Value must be a string',
-            })
-            .trim()
-            .max(255, 'Value must not exceed 255 characters')
-            .transform((val) => (val.length === 0 ? undefined : val)),
-        ),
-        houseNumber: z.optional(
-          z
-            .string({
-              invalid_type_error: 'Value must be a string',
-            })
-            .trim()
-            .max(50, 'Value must not exceed 50 characters')
-            .transform((val) => (val.length === 0 ? undefined : val)),
-        ),
-        city: z.optional(
-          z
-            .string({
-              invalid_type_error: 'Value must be a string',
-            })
-            .trim()
-            .max(100, 'Value must not exceed 100 characters')
-            .transform((val) => (val.length === 0 ? undefined : val)),
-        ),
-        postalCode: z.optional(
-          z
-            .string({
-              invalid_type_error: 'Value must be a string',
-            })
-            .trim()
-            .max(5, 'Value must not exceed 5 characters')
-            .transform((val) => (val.length === 0 ? undefined : val)),
-        ),
-        phones: z.array(phoneSchema).min(1, 'List must contain at least 1 value'),
-      }),
-    [phoneSchema],
-  );
+  const contactSchema = useMemo(() => z.object(createContactValidation), []);
 
   const formModel = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
@@ -177,10 +106,6 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
   const handleSubmitForm = (values: z.infer<typeof contactSchema>) => {
     setIsLoading(true);
     mutationCreateOrUpdate.mutate(values);
-  };
-
-  const updatePhonesList = (list: CreatePhoneDTO[]) => {
-    formModel.setValue<'phones'>('phones', list);
   };
 
   return (
@@ -261,7 +186,7 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
             isDataPending={isLoading}
           />
 
-          <PhonesListForm formModelControl={formModel.control} updatePhonesList={updatePhonesList} />
+          <PhonesListForm formModel={formModel} />
         </form>
       </Form>
 
