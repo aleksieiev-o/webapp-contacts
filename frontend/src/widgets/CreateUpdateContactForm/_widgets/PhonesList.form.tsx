@@ -1,71 +1,67 @@
 import { Badge } from '@/components/shadcn/ui/badge';
 import { Button } from '@/components/shadcn/ui/button';
-import { CreateContactDTO } from '@/shared/types/Contact';
-import { CreatePhoneDTO } from '@/shared/types/Phone';
 import AppInputText from '@/shared/ui/appInput/AppInpt.text';
 import { Plus, X } from 'lucide-react';
 import { FC, ReactElement, useMemo, useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import { Control, useFieldArray, useWatch } from 'react-hook-form';
 import { z, ZodError, ZodIssueCode } from 'zod';
+import { createPhoneValidation } from '../_validations/createPhone.validation';
+import { IPhone } from '@/shared/types/Phone';
+import { CreateContactDTO } from '@/shared/types/Contact';
 
 interface Props {
-  formModelControl: Control<CreateContactDTO>;
-  updatePhonesList: (list: CreatePhoneDTO[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formModel: any;
 }
 
 const PhonesListForm: FC<Props> = (props): ReactElement => {
-  const { formModelControl, updatePhonesList } = props;
-  const [phoneValue, setPhoneValue] = useState<CreatePhoneDTO | undefined>(undefined);
+  const { formModel } = props;
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [currentPhone, setCurrentPhone] = useState<string>('');
+  const {
+    control,
+    resetField,
+    formState: { errors },
+  } = formModel;
+
+  const { fields, append, remove } = useFieldArray({
+    control: control as Control<CreateContactDTO>,
+    name: 'phones',
+  });
 
   const phonesList = useWatch({
-    control: formModelControl,
+    control: control,
     name: 'phones',
     defaultValue: [],
   });
 
-  const handleOnChange = (value: string) => {
-    setPhoneValue({ phone: value });
-  };
-
   const phoneSchemaExtended = useMemo(
     () =>
-      z
-        .object({
-          phone: z
-            .string({
-              required_error: 'Field is required',
-              invalid_type_error: 'Value must be a string',
-            })
-            .trim()
-            .min(4, 'Value must be at least 4 characters')
-            .max(100, 'Value must not exceed 100 characters'),
-        })
-        .superRefine((data, ctx) => {
-          if (phonesList && phonesList.filter((item) => item.phone === data.phone).length > 0) {
-            ctx.addIssue({
-              code: ZodIssueCode.custom,
-              path: ['phones'],
-              message: 'This value is already exist in the list',
-            });
-          }
-        }),
+      z.object(createPhoneValidation).superRefine((data, ctx) => {
+        if (phonesList && phonesList.filter((item: IPhone) => item.phone === data.phone).length > 0) {
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            path: ['phones'],
+            message: 'This value is already exist in the list',
+          });
+        }
+      }),
     [phonesList],
   );
 
-  const addItemToPhonesList = (values: z.infer<typeof phoneSchemaExtended>) => {
+  const addItemToPhonesList = () => {
     setErrorMessage('');
 
     try {
-      const phone = phoneSchemaExtended.parse(values);
+      const phone: z.infer<typeof phoneSchemaExtended> = phoneSchemaExtended.parse({ phone: currentPhone });
 
-      if (phonesList) {
-        updatePhonesList([...phonesList, phone]);
-      } else {
-        updatePhonesList([phone]);
+      if (currentPhone.trim()) {
+        append(phone);
+        setCurrentPhone('');
+        resetField('phone');
       }
 
-      handleOnChange('');
+      setCurrentPhone('');
     } catch (err: unknown) {
       if (err instanceof ZodError) {
         setErrorMessage(err.issues.length ? err.issues[0].message : '');
@@ -73,16 +69,12 @@ const PhonesListForm: FC<Props> = (props): ReactElement => {
     }
   };
 
-  const removeItemFromPhonesList = (payload: string) => {
-    updatePhonesList([...phonesList.filter((item) => payload !== item.phone)]);
-  };
-
   return (
     <div className="w-full flex flex-col items-start justify-start gap-4">
       <div className="w-full flex flex-row flex-nowrap items-end justify-start gap-4">
         <AppInputText
-          handleOnChange={handleOnChange}
-          value={phoneValue?.phone || ''}
+          handleOnChange={(value) => setCurrentPhone(value)}
+          value={currentPhone}
           mode={'input'}
           type={'text'}
           label={'Phone'}
@@ -90,28 +82,30 @@ const PhonesListForm: FC<Props> = (props): ReactElement => {
           required={true}
           disabled={false}
           isDataPending={false}
-          errorMessage={errorMessage}
+          errorMessage={errorMessage || errors.phones?.message || ''}
         />
 
-        <Button
-          onClick={() => addItemToPhonesList({ phone: phoneValue?.phone || '' })}
-          type="button"
-          variant="default"
-          className="gap-4"
-          title="Add phone to phones list"
-        >
-          <Plus className="h-5 w-5" />
-          <span>Add</span>
-        </Button>
+        <div className="h-full relative">
+          <Button
+            onClick={addItemToPhonesList}
+            type="button"
+            variant="default"
+            className="gap-4 relative top-[22px]"
+            title="Add phone to phones list"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Add</span>
+          </Button>
+        </div>
       </div>
 
       <div className="w-full max-h-[55px] flex flex-row flex-wrap items-center justify-start gap-2 overflow-y-auto">
-        {phonesList.map((item, idx) => (
+        {fields.map((item, idx) => (
           <Badge key={`${idx}_${item.phone}`} variant="info" className="gap-4" title={item.phone}>
             <span>{item.phone}</span>
 
             <Button
-              onClick={() => removeItemFromPhonesList(item.phone)}
+              onClick={() => remove(idx)}
               type="button"
               variant="ghost"
               size="icon"
