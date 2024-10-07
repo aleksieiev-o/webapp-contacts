@@ -22,9 +22,9 @@
 
   DB_HOST=localhost
   DB_PORT=3306
-  DB_USER_NAME=root
-  DB_USER_PASSWORD=root
-  DB_NAME=contactsdatabase
+  MARIADB_USER=root
+  MARIADB_PASSWORD=root
+  MARIADB_DATABASE=contactsdatabase
   MARIADB_ROOT_PASSWORD=root
   MARIADB_DATABASE=contactsdatabase
   ```
@@ -56,9 +56,9 @@
 
   DB_HOST=database
   DB_PORT=3306
-  DB_USER_NAME=root
-  DB_USER_PASSWORD=root
-  DB_NAME=contactsdatabase
+  MARIADB_USER=root
+  MARIADB_PASSWORD=root
+  MARIADB_DATABASE=contactsdatabase
   MARIADB_ROOT_PASSWORD=root
   MARIADB_DATABASE=contactsdatabase
   ```
