@@ -1,0 +1,53 @@
+replicaCount: 1
+
+database:
+  image:
+    repository: mariadb
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3306
+  env:
+    NODE_ENV: development
+    HOST: 0.0.0.0
+    PORT: 3000
+    DB_HOST: database
+    DB_PORT: 3306
+    MARIADB_USER: root
+    MARIADB_PASSWORD: root
+    MARIADB_DATABASE: contactsdatabase
+    MARIADB_ROOT_PASSWORD: root
+
+backend:
+  image:
+    repository: backend-local
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 3000
+  env:
+    NODE_ENV: development
+    HOST: 0.0.0.0
+    PORT: 3000
+    DB_HOST: database
+    DB_PORT: 3306
+    MARIADB_USER: root
+    MARIADB_PASSWORD: root
+    MARIADB_DATABASE: contactsdatabase
+    MARIADB_ROOT_PASSWORD: root
+
+frontend:
+  image:
+    repository: frontend-local
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 80
+  env:
+    NODE_ENV: development
+
+ingress:
+  enabled: false

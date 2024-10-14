@@ -1,0 +1,76 @@
+apiVersion: {{ .Chart.apiVersion }}
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-backend
+  labels:
+{{ include "helm-charts.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "helm-charts.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}-backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "helm-charts.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}-backend
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "helm-charts.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Release.Name }}-backend
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.service.port }}
+              protocol: TCP
+					env:
+						- name: NODE_ENV
+              value: {{ .Values.backend.env.NODE_ENV }}
+						- name: HOST
+              value: {{ .Values.backend.env.HOST }}
+						- name: PORT
+              value: {{ .Values.backend.env.PORT }}
+						- name: DB_HOST
+              value: {{ .Values.backend.env.DB_HOST }}
+						- name: DB_PORT
+              value: {{ .Values.backend.env.DB_PORT }}
+						- name: MARIADB_USER
+              value: {{ .Values.backend.env.MARIADB_USER }}
+						- name: MARIADB_PASSWORD
+              value: {{ .Values.backend.env.MARIADB_PASSWORD }}
+						- name: MARIADB_DATABASE
+              value: {{ .Values.backend.env.MARIADB_DATABASE }}
+						- name: MARIADB_ROOT_PASSWORD
+              value: {{ .Values.backend.env.MARIADB_ROOT_PASSWORD }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
