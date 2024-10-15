@@ -22,17 +22,11 @@
 
   DB_HOST=localhost
   DB_PORT=3306
-  DB_USER_NAME=root
-  DB_USER_PASSWORD=root
-  DB_NAME=contactsdatabase
+  MARIADB_USER=root
+  MARIADB_PASSWORD=root
+  MARIADB_DATABASE=contactsdatabase
   MARIADB_ROOT_PASSWORD=root
   MARIADB_DATABASE=contactsdatabase
-  ```
-
-- Create the `.env.development.local` file in the `frontend` folder with the following keys and values:
-
-  ```
-  VITE_API_URL=http://localhost:3000
   ```
 
 - Run the both parts of the project locally in development mode:
@@ -56,18 +50,15 @@
 
   DB_HOST=database
   DB_PORT=3306
-  DB_USER_NAME=root
-  DB_USER_PASSWORD=root
-  DB_NAME=contactsdatabase
+  MARIADB_USER=root
+  MARIADB_PASSWORD=root
+  MARIADB_DATABASE=contactsdatabase
   MARIADB_ROOT_PASSWORD=root
   MARIADB_DATABASE=contactsdatabase
   ```
 
-- Create the `.env` file in the `frontend` folder with the following keys and values:
-
-  ```
-  VITE_API_URL=http://localhost:4000
-  ```
+- The field `service/database/image` in the docker-compose.yml file must be changed to `mariadb:latest` to use it in production locally.
+- The field `service/database/image` in the docker-compose.yml file must be changed to `crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6` to use it in production.
 
 - Run this command in the root folder of the project:
 
@@ -76,6 +67,8 @@
   ```
 
 - It will be created three docker images with database, backend and frontend parts in the container with name `webapp-contacts`.
+
+P.S. When the container is built using GitLab, the variables defined in the repository will be used. However, some variables from the .env file will not be used.
 
 ---
 

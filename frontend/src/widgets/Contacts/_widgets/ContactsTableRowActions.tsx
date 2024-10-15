@@ -27,7 +27,7 @@ const ContactsTableRowActions = <TData,>(props: Props<TData>): ReactElement => {
   };
 
   return (
-    <section className="flex md:flex-row flex-col md:items-center items-start md:justify-center justify-start md:gap-6 gap-4">
+    <section className="flex md:flex-row flex-col md:items-center items-start justify-end md:gap-6 gap-4">
       <ContactDetailsDialog row={row} dialogIsOpen={dialogContactsDetailsIsOpen} setDialogIsOpen={setDialogContactsDetailsIsOpen} />
 
       <TableActionsDropdown updateLink={updateContactLink} handlePrepareRemove={handlePrepareRemove} />

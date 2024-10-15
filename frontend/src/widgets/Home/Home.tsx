@@ -12,6 +12,8 @@ const Home: FC = (): ReactElement => {
       <AppScrollContentWrapper>
         <AppPageTitle title={ERouterTitle.HOME} />
 
+        <p>The contacts are listed on this page</p>
+
         <Link to={ERouter.CONTACTS}>
           <Button variant="default" title="Contacts">
             Contacts

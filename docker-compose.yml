@@ -5,6 +5,7 @@ services:
   database:
     container_name: 'database-container'
     image: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
+    # image: mariadb:latest # only for local machine
     restart: always
     env_file:
       - path: .env

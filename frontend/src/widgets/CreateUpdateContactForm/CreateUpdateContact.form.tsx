@@ -193,7 +193,7 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
       <div className={'flex w-full flex-row items-center justify-start gap-4'}>
         <SubmitButton
           formId={formID}
-          title={mode === 'create' ? 'Create' : 'Update'}
+          title={mode === 'create' ? 'Create contact' : 'Update contact'}
           btnBody={mode === 'create' ? 'Create' : 'Update'}
           isLoading={isLoading}
           disabled={isLoading}

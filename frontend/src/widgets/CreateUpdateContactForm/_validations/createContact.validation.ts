@@ -54,5 +54,5 @@ export const createContactValidation = {
       .max(5, 'Value must not exceed 5 characters')
       .transform((val) => (val.length === 0 ? undefined : val)),
   ),
-  phones: z.array(z.object(createPhoneValidation)).min(1, 'List must contain at least 1 value'),
+  phones: z.array(z.object(createPhoneValidation)).min(1, 'List of phones must contain at least 1 value'),
 };
