@@ -37,7 +37,7 @@ const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
   return (
     <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" size="icon" title="Contact details">
+        <Button variant="default" size="icon" title="Open contact details">
           <SquareUser className="h-5 w-5" />
         </Button>
       </DialogTrigger>
@@ -53,8 +53,8 @@ const ContactDetailsDialog = <TData,>(props: Props<TData>) => {
         </DialogHeader>
 
         <section className="w-full flex flex-col items-center justify-start gap-4 overflow-y-auto">
-          <ContactDetail detailTitle="Last name" detail={lastName} />
           <ContactDetail detailTitle="First name" detail={firstName} />
+          <ContactDetail detailTitle="Last name" detail={lastName} />
           <ContactDetail detailTitle="Street" detail={street} />
           <ContactDetail detailTitle="House number" detail={houseNumber} />
           <ContactDetail detailTitle="City" detail={city} />
