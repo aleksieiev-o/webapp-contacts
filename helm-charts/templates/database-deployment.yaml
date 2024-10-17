@@ -1,4 +1,4 @@
-apiVersion: {{ .Chart.apiVersion }}
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-database
@@ -30,36 +30,40 @@ spec:
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
           imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.database.service.port }}
-              protocol: TCP
-					env:
-						- name: NODE_ENV
-              value: {{ .Values.database.env.NODE_ENV }}
-						- name: HOST
-              value: {{ .Values.database.env.HOST }}
-						- name: PORT
-              value: {{ .Values.database.env.PORT }}
-						- name: DB_HOST
-              value: {{ .Values.database.env.DB_HOST }}
-						- name: DB_PORT
-              value: {{ .Values.database.env.DB_PORT }}
-						- name: MARIADB_USER
-              value: {{ .Values.database.env.MARIADB_USER }}
-						- name: MARIADB_PASSWORD
-              value: {{ .Values.database.env.MARIADB_PASSWORD }}
-						- name: MARIADB_DATABASE
-              value: {{ .Values.database.env.MARIADB_DATABASE }}
-						- name: MARIADB_ROOT_PASSWORD
-              value: {{ .Values.database.env.MARIADB_ROOT_PASSWORD }}
+          - name: http
+            containerPort: {{ .Values.database.service.port }}
+            protocol: TCP
+          env:
+          - name: NODE_ENV
+            value: {{ .Values.database.env.NODE_ENV }}
+          - name: HOST
+            value: {{ .Values.database.env.HOST }}
+          - name: PORT
+            value: "3000"
+            # value: {{ .Values.database.env.PORT }}
+          - name: DB_HOST
+            value: {{ .Values.database.env.DB_HOST }}
+          - name: DB_PORT
+            value: "3306"
+            # value: {{ .Values.database.env.DB_PORT }}
+          - name: MARIADB_USER
+            value: {{ .Values.database.env.MARIADB_USER }}
+          - name: MARIADB_PASSWORD
+            value: {{ .Values.database.env.MARIADB_PASSWORD }}
+          - name: MARIADB_DATABASE
+            value: {{ .Values.database.env.MARIADB_DATABASE }}
+          - name: MARIADB_ROOT_PASSWORD
+            value: {{ .Values.database.env.MARIADB_ROOT_PASSWORD }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            tcpSocket:
+              port: 3306 # TODO define as a variable
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            tcpSocket:
+              port: 3306 # TODO define as a variable
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

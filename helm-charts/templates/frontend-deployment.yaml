@@ -1,4 +1,4 @@
-apiVersion: {{ .Chart.apiVersion }}
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-frontend
@@ -30,20 +30,18 @@ spec:
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.frontend.service.port }}
-              protocol: TCP
-					env:
-						- name: NODE_ENV
-              value: {{ .Values.frontend.env.NODE_ENV }}
+          - name: http
+            containerPort: {{ .Values.frontend.service.port }}
+            protocol: TCP
+          env:
+          - name: NODE_ENV
+            value: {{ .Values.frontend.env.NODE_ENV }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: 80 # TODO define as a variable
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: 80 # TODO define as a variable
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

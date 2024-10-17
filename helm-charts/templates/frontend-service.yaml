@@ -1,16 +1,17 @@
-apiVersion: {{ .Chart.apiVersion }}
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-frontend
   labels:
 {{ include "helm-charts.labels" . | indent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: NodePort
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: 80 # TODO define as a variable
+      targetPort: 80 # TODO define as a variable
       protocol: TCP
       name: http
+      nodePort: 30001 # TODO define as a variable
   selector:
     app.kubernetes.io/name: {{ include "helm-charts.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}-frontend

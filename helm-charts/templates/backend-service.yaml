@@ -1,4 +1,4 @@
-apiVersion: {{ .Chart.apiVersion }}
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-backend
@@ -7,8 +7,8 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: 3000 # TODO define as a variable
+      targetPort: 3000 # TODO define as a variable
       protocol: TCP
       name: http
   selector:

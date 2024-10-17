@@ -18,4 +18,10 @@ Create images once again
 `docker build -t frontend-local ./frontend`
 
 Deployment with value-dev file
-`helm upgrade --install helm-charts ./helm-charts -f values-dev.yaml`
+`helm upgrade --install helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values-dev.yaml`
+
+Deployment-upgrade with value-dev file
+`helm upgrade helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values-dev.yaml`
+
+Full value.yaml file 
+`helm template helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values-dev.yaml --debug`

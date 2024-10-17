@@ -1,5 +1,3 @@
-replicaCount: 1
-
 database:
   image:
     repository: mariadb
@@ -11,14 +9,13 @@ database:
   env:
     NODE_ENV: development
     HOST: 0.0.0.0
-    PORT: 3000
-    DB_HOST: database
-    DB_PORT: 3306
-    MARIADB_USER: root
+    # PORT: "3000" # TODO define hier instead in deployment.yaml
+    DB_HOST: helm-charts-database.default.svc.cluster.local
+    # DB_PORT: "3306" # TODO define hier instead in deployment.yaml
+    MARIADB_USER: test # TODO The name "root" is not possible, because it is already exist when the database is created
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
     MARIADB_ROOT_PASSWORD: root
-
 backend:
   image:
     repository: backend-local
@@ -30,24 +27,49 @@ backend:
   env:
     NODE_ENV: development
     HOST: 0.0.0.0
-    PORT: 3000
-    DB_HOST: database
-    DB_PORT: 3306
-    MARIADB_USER: root
+    # PORT: "3000" # TODO define hier instead in deployment.yaml
+    DB_HOST: helm-charts-database.default.svc.cluster.local # {{ .Release.Name }}-database
+    # DB_PORT: "3306" # TODO define hier instead in deployment.yaml
+    MARIADB_USER: test # TODO The name "root" is not possible, because it is already exist when the database is created
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
     MARIADB_ROOT_PASSWORD: root
-
 frontend:
   image:
     repository: frontend-local
     tag: latest
     pullPolicy: Never
   service:
-    type: ClusterIP
+    type: NodePort
     port: 80
   env:
     NODE_ENV: development
 
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  enabled: false
+  enabled: true
+  className: ""
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: contacts-app-local
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+              service:
+                name: helm-charts-frontend
+                port:
+                  number: 80
+        # - path: /backend
+        #   pathType: Prefix
+        #   backend:
+        #       service:
+        #         name: helm-charts-backend
+        #         port:
+        #           number: 3000
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
