@@ -1,4 +1,6 @@
 database:
+  replication:
+    enabled: false
   image:
     repository: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
     tag: latest
@@ -8,10 +10,10 @@ database:
     port: 3306
   env:
     NODE_ENV: production
-    HOST: "0.0.0.0"
-    PORT: "4000"
-    DB_HOST: database
-    DB_PORT: "3306"
+    HOST: 0.0.0.0
+    # PORT: "4000"
+    DB_HOST: helm-charts-database.default.svc.cluster.local
+    # DB_PORT: "3306"
     MARIADB_USER: root
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
@@ -27,10 +29,10 @@ backend:
     port: 4000
   env:
     NODE_ENV: production
-    HOST: "0.0.0.0"
-    PORT: "4000"
-    DB_HOST: database
-    DB_PORT: "3306"
+    HOST: 0.0.0.0
+    # PORT: "4000"
+    DB_HOST: helm-charts-database.default.svc.cluster.local
+    # DB_PORT: "3306"
     MARIADB_USER: $MARIADB_USER
     MARIADB_PASSWORD: $MARIADB_PASSWORD
     MARIADB_DATABASE: $MARIADB_DATABASE

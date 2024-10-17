@@ -5,10 +5,10 @@ metadata:
   labels:
 {{ include "helm-charts.labels" . | indent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.backend.service.type }}
   ports:
-    - port: 3000 # TODO define as a variable
-      targetPort: 3000 # TODO define as a variable
+    - port: {{ .Values.backend.service.port }}
+      targetPort: {{ .Values.backend.containerPort }}
       protocol: TCP
       name: http
   selector:

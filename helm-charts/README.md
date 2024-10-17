@@ -23,5 +23,5 @@ Deployment with value-dev file
 Deployment-upgrade with value-dev file
 `helm upgrade helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values-dev.yaml`
 
-Full value.yaml file 
-`helm template helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values-dev.yaml --debug`
+Full value.yaml file with debug information
+`helm template helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values-dev.yaml --debug > ./helm-charts/values-template.debug.yaml`

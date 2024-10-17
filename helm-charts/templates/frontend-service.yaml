@@ -5,13 +5,13 @@ metadata:
   labels:
 {{ include "helm-charts.labels" . | indent 4 }}
 spec:
-  type: NodePort
+  type: {{ .Values.frontend.service.type }}
   ports:
-    - port: 80 # TODO define as a variable
-      targetPort: 80 # TODO define as a variable
+    - port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.containerPort }}
       protocol: TCP
       name: http
-      nodePort: 30001 # TODO define as a variable
+      nodePort: {{ .Values.frontend.service.nodePort }}
   selector:
     app.kubernetes.io/name: {{ include "helm-charts.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}-frontend

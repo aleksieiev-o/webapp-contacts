@@ -55,11 +55,15 @@ spec:
           - name: MARIADB_ROOT_PASSWORD
             value: {{ .Values.backend.env.MARIADB_ROOT_PASSWORD }}
           livenessProbe:
+            initialDelaySeconds: 25
+            periodSeconds: 5
             tcpSocket:
-              port: 3000 # TODO define as a variable
+              port: {{ .Values.backend.service.port }}
           readinessProbe:
+            initialDelaySeconds: 25
+            periodSeconds: 5
             tcpSocket:
-              port: 3000 # TODO define as a variable
+              port: {{ .Values.backend.service.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

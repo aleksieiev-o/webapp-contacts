@@ -1,21 +1,25 @@
 database:
+  replication:
+    enabled: false
   image:
     repository: mariadb
     tag: latest
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    port: 3306
+    port: "3306"
+  containerPort: "3306"
   env:
     NODE_ENV: development
     HOST: 0.0.0.0
-    # PORT: "3000" # TODO define hier instead in deployment.yaml
+    # PORT: "3000"
     DB_HOST: helm-charts-database.default.svc.cluster.local
-    # DB_PORT: "3306" # TODO define hier instead in deployment.yaml
-    MARIADB_USER: test # TODO The name "root" is not possible, because it is already exist when the database is created
+    # DB_PORT: "3306"
+    MARIADB_USER: dev
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
     MARIADB_ROOT_PASSWORD: root
+
 backend:
   image:
     repository: backend-local
@@ -23,17 +27,19 @@ backend:
     pullPolicy: Never
   service:
     type: ClusterIP
-    port: 3000
+    port: "3000"
+  containerPort: "3000"
   env:
     NODE_ENV: development
     HOST: 0.0.0.0
-    # PORT: "3000" # TODO define hier instead in deployment.yaml
-    DB_HOST: helm-charts-database.default.svc.cluster.local # {{ .Release.Name }}-database
-    # DB_PORT: "3306" # TODO define hier instead in deployment.yaml
-    MARIADB_USER: test # TODO The name "root" is not possible, because it is already exist when the database is created
+    # PORT: "3000"
+    DB_HOST: helm-charts-database.default.svc.cluster.local
+    # DB_PORT: "3306"
+    MARIADB_USER: dev
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
     MARIADB_ROOT_PASSWORD: root
+
 frontend:
   image:
     repository: frontend-local
@@ -41,13 +47,15 @@ frontend:
     pullPolicy: Never
   service:
     type: NodePort
-    port: 80
+    port: "80"
+    nodePort: "30001"
+  containerPort: "8080"
   env:
     NODE_ENV: development
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations:
     kubernetes.io/ingress.class: nginx

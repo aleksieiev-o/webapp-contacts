@@ -38,10 +38,10 @@ spec:
             value: {{ .Values.frontend.env.NODE_ENV }}
           livenessProbe:
             tcpSocket:
-              port: 80 # TODO define as a variable
+              port: {{ .Values.frontend.service.port }}
           readinessProbe:
             tcpSocket:
-              port: 80 # TODO define as a variable
+              port: {{ .Values.frontend.service.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
