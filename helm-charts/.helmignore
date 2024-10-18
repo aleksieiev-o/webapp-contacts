@@ -22,4 +22,4 @@
 *.tmproj
 .vscode/
 
-values-template.debug.yaml
+values.debug.yaml
