@@ -10,8 +10,8 @@ variables:
       - "upgrade"
       - "delete"
 
-  RELEASE_NAME: helm-charts
-  CHART_NAME: helm-charts
+  RELEASE_NAME: webapp-contacts-charts
+  CHART_NAME: webapp-contacts-charts
 
 
 

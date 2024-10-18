@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "helm-charts.name" -}}
+{{- define "webapp-contacts-charts.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "helm-charts.fullname" -}}
+{{- define "webapp-contacts-charts.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "helm-charts.chart" -}}
+{{- define "webapp-contacts-charts.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "helm-charts.labels" -}}
-helm.sh/chart: {{ include "helm-charts.chart" . }}
-{{ include "helm-charts.selectorLabels" . }}
+{{- define "webapp-contacts-charts.labels" -}}
+helm.sh/chart: {{ include "webapp-contacts-charts.chart" . }}
+{{ include "webapp-contacts-charts.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,30 +45,30 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "helm-charts.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "helm-charts.name" . }}
+{{- define "webapp-contacts-charts.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "webapp-contacts-charts.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Pod-typed selector labels
 */}}
-{{- define "helm-charts.selectorLabelsDatabase" -}}
+{{- define "webapp-contacts-charts.selectorLabelsDatabase" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}-database
 {{- end }}
-{{- define "helm-charts.selectorLabelsBackend" -}}
+{{- define "webapp-contacts-charts.selectorLabelsBackend" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}-backend
 {{- end }}
-{{- define "helm-charts.selectorLabelsFrontend" -}}
+{{- define "webapp-contacts-charts.selectorLabelsFrontend" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}-frontend
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "helm-charts.serviceAccountName" -}}
+{{- define "webapp-contacts-charts.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "helm-charts.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "webapp-contacts-charts.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

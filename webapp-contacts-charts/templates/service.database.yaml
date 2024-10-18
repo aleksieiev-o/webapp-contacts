@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-database
   labels:
-{{ include "helm-charts.labels" . | indent 4 }}
+{{ include "webapp-contacts-charts.labels" . | indent 4 }}
 spec:
   type: {{ .Values.database.service.type }}
   clusterIP: None
@@ -13,4 +13,4 @@ spec:
       protocol: TCP
       name: {{ .Release.Name }}-database-port
   selector:
-{{ include "helm-charts.selectorLabelsDatabase" . | indent 4 }}
+{{ include "webapp-contacts-charts.selectorLabelsDatabase" . | indent 4 }}

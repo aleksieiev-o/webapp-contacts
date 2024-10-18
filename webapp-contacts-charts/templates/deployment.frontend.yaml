@@ -3,22 +3,22 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-frontend
   labels:
-{{ include "helm-charts.labels" . | indent 4 }}
+{{ include "webapp-contacts-charts.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
   selector:
     matchLabels:
-{{ include "helm-charts.selectorLabelsFrontend" . | indent 6 }}
+{{ include "webapp-contacts-charts.selectorLabelsFrontend" . | indent 6 }}
   template:
     metadata:
       labels:
-{{ include "helm-charts.selectorLabelsFrontend" . | indent 8 }}
+{{ include "webapp-contacts-charts.selectorLabelsFrontend" . | indent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ template "helm-charts.serviceAccountName" . }}
+      serviceAccountName: {{ template "webapp-contacts-charts.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

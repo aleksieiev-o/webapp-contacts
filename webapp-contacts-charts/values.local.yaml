@@ -14,7 +14,7 @@ database:
     NODE_ENV: development
     HOST: 0.0.0.0
     PORT: 3000
-    DB_HOST: helm-charts-database.default.svc.cluster.local
+    DB_HOST: webapp-contacts-charts-database.default.svc.cluster.local
     DB_PORT: 3306
     MARIADB_USER: dev
     MARIADB_PASSWORD: root
@@ -38,7 +38,7 @@ backend:
     NODE_ENV: development
     HOST: 0.0.0.0
     PORT: 3000
-    DB_HOST: helm-charts-database.default.svc.cluster.local
+    DB_HOST: webapp-contacts-charts-database.default.svc.cluster.local
     DB_PORT: 3306
     MARIADB_USER: dev
     MARIADB_PASSWORD: root
@@ -73,7 +73,7 @@ ingress:
           pathType: Prefix
           backend:
               service:
-                name: helm-charts-frontend
+                name: webapp-contacts-charts-frontend
                 port:
                   number: 80
   tls: []
