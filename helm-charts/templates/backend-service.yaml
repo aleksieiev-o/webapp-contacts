@@ -12,5 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "helm-charts.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}-backend
+{{ include "helm-charts.selectorLabelsBackend" . | indent 4 }}

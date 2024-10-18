@@ -51,6 +51,19 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Pod-typed selector labels
+*/}}
+{{- define "helm-charts.selectorLabelsDatabase" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}-database
+{{- end }}
+{{- define "helm-charts.selectorLabelsBackend" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}-backend
+{{- end }}
+{{- define "helm-charts.selectorLabelsFrontend" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}-frontend
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "helm-charts.serviceAccountName" -}}

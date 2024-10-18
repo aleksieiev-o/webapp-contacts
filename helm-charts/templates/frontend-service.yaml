@@ -13,5 +13,4 @@ spec:
       name: http
       nodePort: {{ .Values.frontend.service.nodePort }}
   selector:
-    app.kubernetes.io/name: {{ include "helm-charts.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}-frontend
+{{ include "helm-charts.selectorLabelsFrontend" . | indent 4 }}

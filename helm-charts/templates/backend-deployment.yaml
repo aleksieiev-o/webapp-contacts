@@ -8,13 +8,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "helm-charts.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}-backend
+{{ include "helm-charts.selectorLabelsBackend" . | indent 6 }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "helm-charts.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}-backend
+{{ include "helm-charts.selectorLabelsBackend" . | indent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

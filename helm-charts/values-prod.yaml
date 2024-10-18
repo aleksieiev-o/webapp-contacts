@@ -45,7 +45,7 @@ frontend:
     pullPolicy: Always
   service:
     type: NodePort
-    port: 8080
+    port: 80
   env:
     NODE_ENV: production
 

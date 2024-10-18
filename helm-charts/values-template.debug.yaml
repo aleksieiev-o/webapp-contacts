@@ -31,7 +31,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: helm-charts
     app.kubernetes.io/instance: helm-charts-backend
 ---
 # Source: helm-charts/templates/database-service.yaml
@@ -53,7 +52,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: helm-charts
     app.kubernetes.io/instance: helm-charts-database
 ---
 # Source: helm-charts/templates/frontend-service.yaml
@@ -71,12 +69,11 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 80
       protocol: TCP
       name: http
       nodePort: 30001
   selector:
-    app.kubernetes.io/name: helm-charts
     app.kubernetes.io/instance: helm-charts-frontend
 ---
 # Source: helm-charts/templates/backend-deployment.yaml
@@ -94,12 +91,10 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: helm-charts
       app.kubernetes.io/instance: helm-charts-backend
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: helm-charts
         app.kubernetes.io/instance: helm-charts-backend
     spec:
       serviceAccountName: helm-charts
@@ -163,12 +158,10 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: helm-charts
       app.kubernetes.io/instance: helm-charts-database
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: helm-charts
         app.kubernetes.io/instance: helm-charts-database
     spec:
       serviceAccountName: helm-charts
@@ -233,12 +226,10 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: helm-charts
       app.kubernetes.io/instance: helm-charts-frontend
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: helm-charts
         app.kubernetes.io/instance: helm-charts-frontend
     spec:
       serviceAccountName: helm-charts
