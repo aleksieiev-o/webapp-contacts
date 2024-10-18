@@ -61,7 +61,7 @@ frontend:
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -76,13 +76,6 @@ ingress:
                 name: helm-charts-frontend
                 port:
                   number: 80
-        # - path: /backend
-        #   pathType: Prefix
-        #   backend:
-        #       service:
-        #         name: helm-charts-backend
-        #         port:
-        #           number: 3000
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
