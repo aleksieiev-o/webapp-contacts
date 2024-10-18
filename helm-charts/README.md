@@ -17,11 +17,11 @@ Create images once again
 `docker build -t backend-local .`
 `docker build -t frontend-local ./frontend`
 
-Deployment with value-dev file
+Deployment with value.local file
 `helm upgrade --install helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values.local.yaml`
 
-Deployment-upgrade with value-dev file
+Deployment-upgrade with value.local file
 `helm upgrade helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values.local.yaml`
 
 Full value.yaml file with debug information
-`helm template helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values.local.yaml --debug > ./helm-charts/values.debug.yaml`
+`helm template helm-charts ./helm-charts/ -f ./helm-charts/values.yaml -f ./helm-charts/values.local.yaml --debug > ./helm-charts/tmp/values.debug.yaml`
