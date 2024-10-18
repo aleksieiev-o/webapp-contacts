@@ -37,13 +37,11 @@ spec:
           - name: HOST
             value: {{ .Values.backend.env.HOST }}
           - name: PORT
-            value: "3000"
-            # value: {{ .Values.backend.env.PORT }}
+            value: {{ .Values.backend.env.PORT | quote }}
           - name: DB_HOST
             value: {{ .Values.backend.env.DB_HOST }}
           - name: DB_PORT
-            value: "3306"
-            # value: {{ .Values.backend.env.DB_PORT }}
+            value: {{ .Values.backend.env.DB_PORT | quote }}
           - name: MARIADB_USER
             value: {{ .Values.backend.env.MARIADB_USER }}
           - name: MARIADB_PASSWORD

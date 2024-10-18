@@ -13,16 +13,16 @@ database:
   env:
     NODE_ENV: development
     HOST: 0.0.0.0
-    # PORT: "3000"
+    PORT: 3000
     DB_HOST: helm-charts-database.default.svc.cluster.local
-    # DB_PORT: "3306"
+    DB_PORT: 3306
     MARIADB_USER: dev
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
     MARIADB_ROOT_PASSWORD: root
   volumeName: database-volume
   volumeMountPath: /var/lib/mysql
-  storage: 1Gi
+  storage: 128Mi
 
 backend:
   replicaCount: 1
@@ -37,9 +37,9 @@ backend:
   env:
     NODE_ENV: development
     HOST: 0.0.0.0
-    # PORT: "3000"
+    PORT: 3000
     DB_HOST: helm-charts-database.default.svc.cluster.local
-    # DB_PORT: "3306"
+    DB_PORT: 3306
     MARIADB_USER: dev
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
@@ -59,7 +59,7 @@ frontend:
   env:
     NODE_ENV: development
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+
 ingress:
   enabled: true
   className: ""

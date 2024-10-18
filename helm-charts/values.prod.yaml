@@ -21,7 +21,7 @@ database:
     MARIADB_ROOT_PASSWORD: root
   volumeName: database-volume
   volumeMountPath: /var/lib/mysql
-  storage: 1Gi
+  storage: 128Mi
 
 backend:
   replicaCount: 1
@@ -51,17 +51,15 @@ frontend:
     pullPolicy: Always
   service:
     type: NodePort
-    port: 80
+    port: 8080
   env:
     NODE_ENV: production
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: true
   className: ""
   annotations:
     kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
   hosts:
     - host: contacts-app-education-2024.tpcluster.de
       paths:
@@ -72,15 +70,5 @@ ingress:
                 name: helm-charts-frontend
                 port:
                   number: 80
-        # - path: /backend
-        #   pathType: Prefix
-        #   backend:
-        #       service:
-        #         name: helm-charts-backend
-        #         port:
-        #           number: 4000
 
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local

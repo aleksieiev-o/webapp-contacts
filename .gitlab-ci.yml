@@ -1,6 +1,19 @@
 variables:
+  PROJECT_URL: contacts-app-education-2024.tpcluster.de
+
   IMAGE_NAME_BACKEND: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
   IMAGE_NAME_FRONTEND: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
+
+  DEPLOY_MODE: 
+    value: upgrade
+    options:
+      - "upgrade"
+      - "delete"
+
+  RELEASE_NAME: helm-charts
+  CHART_NAME: helm-charts
+
+
 
 .docker_login: &docker_login
   - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
@@ -8,6 +21,7 @@ variables:
 stages:
   - build
   - deploy
+  - deploy-helm
 
 include:
   - project: 'teleport/ci-cd/ci-scripts'
@@ -63,3 +77,34 @@ deploy_stage:
       "MARIADB_PASSWORD='$DB_PASSWORD'"
       "MARIADB_DATABASE='$DB_NAME'"
       "MARIADB_ROOT_PASSWORD='$DB_ROOTPASSWORD'"
+
+helm_deploy:
+  stage: deploy-helm
+  image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: manual
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: on_success
+  script:
+    - mkdir -p ~/.ssh
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_IDENTITY_FILE" | tr -d '\r' | ssh-add -
+
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    - >
+      ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage-helm.sh
+      "CI_REGISTRY_USER='$CI_REGISTRY_USER'"
+      "CI_REGISTRY_PASSWORD='$CI_REGISTRY_PASSWORD'"
+      "MARIADB_USER='$DB_USER'"
+      "MARIADB_PASSWORD='$DB_PASSWORD'"
+      "MARIADB_DATABASE='$DB_NAME'"
+      "MARIADB_ROOT_PASSWORD='$DB_ROOTPASSWORD'"
+      "IMAGE_NAME_BACKEND='$IMAGE_NAME_BACKEND'"
+      "IMAGE_NAME_FRONTEND='$IMAGE_NAME_FRONTEND'"
+      "PROJECT_URL='$PROJECT_URL'"
+      "DEPLOY_MODE='$DEPLOY_MODE'"
+      "RELEASE_NAME='$RELEASE_NAME'"
+      "CHART_NAME='$CHART_NAME'"
