@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "helm-charts.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.frontend.replicaCount }}
   selector:
     matchLabels:
 {{ include "helm-charts.selectorLabelsFrontend" . | indent 6 }}
@@ -28,7 +28,7 @@ spec:
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
-          - name: http
+          - name: frontend-port
             containerPort: {{ .Values.frontend.service.port }}
             protocol: TCP
           env:

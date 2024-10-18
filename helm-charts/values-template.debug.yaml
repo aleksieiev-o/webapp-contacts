@@ -12,6 +12,18 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 automountServiceAccountToken: true
 ---
+# Source: helm-charts/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: helm-charts-database-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 # Source: helm-charts/templates/backend-service.yaml
 apiVersion: v1
 kind: Service
@@ -29,7 +41,7 @@ spec:
     - port: 3000
       targetPort: 3000
       protocol: TCP
-      name: http
+      name: backend-port
   selector:
     app.kubernetes.io/instance: helm-charts-backend
 ---
@@ -46,11 +58,12 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP
+  clusterIP: None
   ports:
     - port: 3306
       targetPort: 3306
       protocol: TCP
-      name: http
+      name: helm-charts-database-port
   selector:
     app.kubernetes.io/instance: helm-charts-database
 ---
@@ -71,7 +84,7 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
-      name: http
+      name: frontend-port
       nodePort: 30001
   selector:
     app.kubernetes.io/instance: helm-charts-frontend
@@ -107,7 +120,7 @@ spec:
           image: "backend-local:latest"
           imagePullPolicy: Never
           ports:
-          - name: http
+          - name: backend-port
             containerPort: 3000
             protocol: TCP
           env:
@@ -144,9 +157,55 @@ spec:
           resources:
             {}
 ---
-# Source: helm-charts/templates/database-deployment.yaml
+# Source: helm-charts/templates/frontend-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
+metadata:
+  name: helm-charts-frontend
+  labels:
+    helm.sh/chart: helm-charts-0.1.0
+    app.kubernetes.io/name: helm-charts
+    app.kubernetes.io/instance: helm-charts
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: helm-charts-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: helm-charts-frontend
+    spec:
+      serviceAccountName: helm-charts
+      securityContext:
+        {}
+      containers:
+        - name: helm-charts-frontend
+          securityContext:
+            {}
+          image: "frontend-local:latest"
+          imagePullPolicy: Never
+          ports:
+          - name: frontend-port
+            containerPort: 80
+            protocol: TCP
+          env:
+          - name: NODE_ENV
+            value: development
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+          resources:
+            {}
+---
+# Source: helm-charts/templates/statefulset.database.yaml
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: helm-charts-database
   labels:
@@ -156,6 +215,8 @@ metadata:
     app.kubernetes.io/version: "1.16.0"
     app.kubernetes.io/managed-by: Helm
 spec:
+  serviceName: helm-charts-database
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/instance: helm-charts-database
@@ -174,7 +235,7 @@ spec:
           image: "mariadb:latest"
           imagePullPolicy: IfNotPresent
           ports:
-          - name: http
+          - name: database-port
             containerPort: 3306
             protocol: TCP
           env:
@@ -208,54 +269,15 @@ spec:
             periodSeconds: 5
             tcpSocket:
               port: 3306
+          volumeMounts:
+          - name: database_volume
+            mountPath: /var/lib/mysql
           resources:
             {}
----
-# Source: helm-charts/templates/frontend-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: helm-charts-frontend
-  labels:
-    helm.sh/chart: helm-charts-0.1.0
-    app.kubernetes.io/name: helm-charts
-    app.kubernetes.io/instance: helm-charts
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: helm-charts-frontend
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/instance: helm-charts-frontend
-    spec:
-      serviceAccountName: helm-charts
-      securityContext:
-        {}
-      containers:
-        - name: helm-charts-frontend
-          securityContext:
-            {}
-          image: "frontend-local:latest"
-          imagePullPolicy: Never
-          ports:
-          - name: http
-            containerPort: 80
-            protocol: TCP
-          env:
-          - name: NODE_ENV
-            value: development
-          livenessProbe:
-            tcpSocket:
-              port: 80
-          readinessProbe:
-            tcpSocket:
-              port: 80
-          resources:
-            {}
+      volumes:
+        - name: database_volume
+          persistentVolumeClaim:
+            claimName: helm-charts-database-pvc
 ---
 # Source: helm-charts/templates/tests/test-connection.yaml
 apiVersion: v1

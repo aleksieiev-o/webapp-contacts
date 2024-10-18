@@ -1,4 +1,5 @@
 database:
+  replicaCount: 1
   replication:
     enabled: false
   image:
@@ -18,8 +19,12 @@ database:
     MARIADB_PASSWORD: root
     MARIADB_DATABASE: contactsdatabase
     MARIADB_ROOT_PASSWORD: root
+  volumeName: database-volume
+  volumeMountPath: /var/lib/mysql
+  storage: 1Gi
 
 backend:
+  replicaCount: 1
   image:
     repository: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
     tag: latest
@@ -39,6 +44,7 @@ backend:
     MARIADB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
 
 frontend:
+  replicaCount: 1
   image:
     repository: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
     tag: latest

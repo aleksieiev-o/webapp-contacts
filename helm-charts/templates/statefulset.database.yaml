@@ -1,10 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}-database
   labels:
 {{ include "helm-charts.labels" . | indent 4 }}
 spec:
+  serviceName: {{ .Release.Name }}-database
+  replicas: {{ .Values.database.replicaCount }}
   selector:
     matchLabels:
 {{ include "helm-charts.selectorLabelsDatabase" . | indent 6 }}
@@ -27,7 +29,7 @@ spec:
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
           imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           ports:
-          - name: http
+          - name: database-port
             containerPort: {{ .Values.database.service.port }}
             protocol: TCP
           env:
@@ -61,8 +63,15 @@ spec:
             periodSeconds: 5
             tcpSocket:
               port: {{ .Values.database.service.port }}
+          volumeMounts:
+          - name: {{ .Values.database.volumeName }}
+            mountPath: {{ .Values.database.volumeMountPath }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: {{ .Values.database.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-database-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

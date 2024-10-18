@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "helm-charts.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.backend.replicaCount }}
   selector:
     matchLabels:
 {{ include "helm-charts.selectorLabelsBackend" . | indent 6 }}
@@ -28,7 +28,7 @@ spec:
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
-          - name: http
+          - name: backend-port
             containerPort: {{ .Values.backend.service.port }}
             protocol: TCP
           env:
