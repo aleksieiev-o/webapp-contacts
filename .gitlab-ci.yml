@@ -17,40 +17,21 @@ variables:
   - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 
 stages:
-  - push
   - build
   - deploy
+  - push
   - deploy-helm
 
 include:
   - project: 'teleport/ci-cd/ci-scripts'
-    ref: master
+    ref: anchors
     file:
-    # it is used only by deploy to server, to connect using SSH
-    # - 'before-script.yml'
-    # it is used only by deploy to cluster
+    - 'before-script.yml'
     - 'before-deploy-stagecluster-script.yml'
-
-push_to_repo:
-  stage: push
-  image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      variables:
-        REPO: teleport-stable
-    - if: $CI_COMMIT_BRANCH == "dev"
-      variables:
-        REPO: teleport-stage
-      when: manual
-      allow_failure: true
-  script:
-    - |
-      helm package -u webapp-contacts-charts  # Ordnerpfad zur Chart.yaml
-      curl -u ${CI_NEXUS_USER}:${CI_NEXUS_PASSWORD} https://repo.tpdev.de/repository/$REPO/ --upload-file ${CHARTNAME}-*.tgz -s
-      rm ${CHARTNAME}-*.tgz
 
 backend_build:
   stage: build
+  extends: [.docker_before]
   rules:
     - if: $CI_COMMIT_TAG != null
     - if: $CI_PIPELINE_SOURCE == "web"
@@ -63,6 +44,7 @@ backend_build:
 
 frontend_build:
   stage: build
+  extends: [.docker_before]
   rules:
     - if: $CI_COMMIT_TAG != null
     - if: $CI_PIPELINE_SOURCE == "web"
@@ -75,6 +57,7 @@ frontend_build:
 
 deploy_stage:
   stage: deploy
+  extends: [.docker_before]
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
       when: manual
@@ -99,8 +82,28 @@ deploy_stage:
       "MARIADB_DATABASE='$DB_NAME'"
       "MARIADB_ROOT_PASSWORD='$DB_ROOTPASSWORD'"
 
-helm_deploy:
+push_to_repo:
+  stage: push
+  extends: [.docker_before]
+  image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
+  rules:
+    - if: $CI_COMMIT_TAG != null
+      variables:
+        REPO: teleport-stable
+    - if: $CI_COMMIT_BRANCH == "dev"
+      variables:
+        REPO: teleport-stage
+      changes: 
+        - ${CHART_NAME}/*/**
+  script:
+    - |
+      helm package -u webapp-contacts-charts  # Ordnerpfad zur Chart.yaml
+      curl -u ${CI_NEXUS_USER}:${CI_NEXUS_PASSWORD} https://repo.tpdev.de/repository/$REPO/ --upload-file ${CHART_NAME}-*.tgz -s
+      rm ${CHART_NAME}-*.tgz
+
+deploy_helm:
   stage: deploy-helm
+  extends: [.stage_cluster_before]
   image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
