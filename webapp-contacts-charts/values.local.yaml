@@ -10,10 +10,13 @@ database:
     type: ClusterIP
     port: "3306"
   containerPort: "3306"
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
+    whenScaled: Retain
   env:
-    NODE_ENV: development
+    NODE_ENV: production
     HOST: 0.0.0.0
-    PORT: 3000
+    PORT: 4000
     DB_HOST: webapp-contacts-charts-database.default.svc.cluster.local
     DB_PORT: 3306
     MARIADB_USER: dev
@@ -31,13 +34,13 @@ backend:
     tag: latest
     pullPolicy: Never
   service:
-    type: ClusterIP
-    port: "3000"
-  containerPort: "3000"
+    type: NodePort
+    port: "4000"
+  containerPort: "4000"
   env:
-    NODE_ENV: development
+    NODE_ENV: production
     HOST: 0.0.0.0
-    PORT: 3000
+    PORT: 4000
     DB_HOST: webapp-contacts-charts-database.default.svc.cluster.local
     DB_PORT: 3306
     MARIADB_USER: dev
@@ -57,7 +60,7 @@ frontend:
     nodePort: "30001"
   containerPort: "80"
   env:
-    NODE_ENV: development
+    NODE_ENV: production
 
 
 ingress:
@@ -65,18 +68,28 @@ ingress:
   className: "nginx"
   annotations:
     kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
   hosts:
     - host: contacts-app-local
       paths:
         - path: /
           pathType: Prefix
           backend:
-              service:
-                name: webapp-contacts-charts-frontend
-                port:
-                  number: 80
+            service:
+              name: webapp-contacts-charts-frontend
+              port:
+                number: 80
+        - path: /backend
+          pathType: Prefix
+          backend:
+            service:
+              name: webapp-contacts-charts-backend
+              port:
+                number: 4000
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

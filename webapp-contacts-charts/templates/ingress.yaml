@@ -53,9 +53,9 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ include "webapp-contacts-charts.fullname" $ }}-frontend
+                name: {{ .backend.service.name }}
                 port:
-                  number: {{ $svcFrontendPort }}
+                  number: {{ .backend.service.port.number }}
               {{- else }}
               serviceName: {{ $fullName }}
               servicePort: {{ $svcFrontendPort }}

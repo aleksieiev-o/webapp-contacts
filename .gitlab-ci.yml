@@ -25,10 +25,11 @@ stages:
 include:
   - project: 'teleport/ci-cd/ci-scripts'
     ref: master
-    file: 'before-script.yml'
-  - project: 'teleport/ci-cd/ci-scripts'
-    ref: master
-    file: 'before-deploy-script.yml'
+    file:
+    # it is used only by deploy to server, to connect using SSH
+    # - 'before-script.yml'
+    # it is used only by deploy to cluster
+    - 'before-deploy-stagecluster-script.yml'
 
 push_to_repo:
   stage: push
@@ -47,7 +48,6 @@ push_to_repo:
       helm package -u webapp-contacts-charts  # Ordnerpfad zur Chart.yaml
       curl -u ${CI_NEXUS_USER}:${CI_NEXUS_PASSWORD} https://repo.tpdev.de/repository/$REPO/ --upload-file ${CHARTNAME}-*.tgz -s
       rm ${CHARTNAME}-*.tgz
-
 
 backend_build:
   stage: build
@@ -106,11 +106,12 @@ helm_deploy:
     - if: $CI_COMMIT_BRANCH == "dev"
       variables:
         REPO: teleport-stage
-    - if: $CI_COMMIT_BRANCH != "dev" && $CI_COMMIT_BRANCH != "main"
-      variables:
-        REPO: .
       when: manual
-      allow_failure: true
+    # - if: $CI_COMMIT_BRANCH != "dev" && $CI_COMMIT_BRANCH != "main"
+    #   variables:
+    #     REPO: .
+    #   when: manual
+    #   allow_failure: true
   script:
     - helm repo update
     
@@ -130,12 +131,15 @@ helm_deploy:
         service:
           type: ClusterIP
           port: 3306
+        persistentVolumeClaimRetentionPolicy:
+          whenDeleted: Retain
+          whenScaled: Retain
         env:
           NODE_ENV: production
           HOST: 0.0.0.0
-          # PORT: "4000"
+          PORT: 4000
           DB_HOST: ${RELEASE_NAME}-database.default.svc.cluster.local
-          # DB_PORT: "3306"
+          DB_PORT: 3306
           MARIADB_USER: ${DB_USER}
           MARIADB_PASSWORD: ${DB_PASSWORD}
           MARIADB_DATABASE: ${DB_NAME}
@@ -153,12 +157,13 @@ helm_deploy:
         service:
           type: ClusterIP
           port: 4000
+        containerPort: "4000"
         env:
           NODE_ENV: production
           HOST: 0.0.0.0
-          # PORT: "4000"
+          PORT: 4000
           DB_HOST: ${RELEASE_NAME}-database.default.svc.cluster.local
-          # DB_PORT: "3306"
+          DB_PORT: 3306
           MARIADB_USER: ${DB_USER}
           MARIADB_PASSWORD: ${DB_PASSWORD}
           MARIADB_DATABASE: ${DB_NAME}
@@ -172,7 +177,8 @@ helm_deploy:
           pullPolicy: Always
         service:
           type: NodePort
-          port: 8080
+          port: 80
+          nodePort: "30004"
         env:
           NODE_ENV: production
 
@@ -187,14 +193,28 @@ helm_deploy:
               - path: /
                 pathType: Prefix
                 backend:
-                    service:
-                      name: ${RELEASE_NAME}-frontend
-                      port:
-                        number: 80
+                  service:
+                    name: ${RELEASE_NAME}-frontend
+                    port:
+                      number: 80
+              - path: /backend
+                pathType: Prefix
+                backend:
+                  service:
+                    name: ${RELEASE_NAME}-backend
+                    port:
+                      number: 4000
         tls:
           - secretName: tls-secret
             hosts:
               - ${PROJECT_HOST}
+
+      autoscaling:
+        enabled: false
+        minReplicas: 1
+        maxReplicas: 1
+        targetCPUUtilizationPercentage: 80
+        targetMemoryUtilizationPercentage: 80
       EOF
 
     - |

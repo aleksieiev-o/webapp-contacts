@@ -7,6 +7,9 @@ metadata:
 spec:
   serviceName: {{ .Release.Name }}-database
   replicas: {{ .Values.database.replicaCount }}
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: {{ .Values.database.persistentVolumeClaimRetentionPolicy.whenDeleted }}
+    whenScaled: {{ .Values.database.persistentVolumeClaimRetentionPolicy.whenScaled }}
   selector:
     matchLabels:
 {{ include "webapp-contacts-charts.selectorLabelsDatabase" . | indent 6 }}

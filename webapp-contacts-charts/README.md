@@ -1,5 +1,4 @@
 ###### Lokal deployment using Helm
-
 Start the Minikube
 `minikube start`
 
@@ -17,11 +16,11 @@ Create images once again
 `docker build -t backend-local .`
 `docker build -t frontend-local ./frontend`
 
-Upgrade with `value.local.yaml` file
-`helm upgrade --install webapp-contacts-charts ./webapp-contacts-charts/ -f ./webapp-contacts-charts/values.yaml -f ./webapp-contacts-charts/values.local.yaml`
+Upgrade the local cluster using `value.local.yaml` file
+`helm upgrade --install webapp-contacts-charts ./webapp-contacts-charts/ -f ./webapp-contacts-charts/values.local.yaml`
 
 Uninstall
 `helm uninstall webapp-contacts-charts`
 
-Get full `value.yaml` file with debug information to `./webapp-contacts-charts/tmp/values.debug.yaml`
-`helm template webapp-contacts-charts ./webapp-contacts-charts/ -f ./webapp-contacts-charts/values.yaml -f ./webapp-contacts-charts/values.local.yaml --debug > ./webapp-contacts-charts/tmp/values.debug.yaml`
+Get value-template with debug information using file `./webapp-contacts-charts/tmp/values.debug.yaml`
+`mkdir -p ./webapp-contacts-charts/tmp && helm template webapp-contacts-charts ./webapp-contacts-charts/ -f ./webapp-contacts-charts/values.local.yaml --debug > ./webapp-contacts-charts/tmp/values.debug.yaml`
