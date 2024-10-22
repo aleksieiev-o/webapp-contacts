@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-database
+  labels:
+{{ include "webapp-contacts-charts.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.database.service.type }}
+  clusterIP: None
+  ports:
+    - port: {{ .Values.database.service.port }}
+      targetPort: {{ .Values.database.containerPort }}
+      protocol: TCP
+      name: {{ .Release.Name }}-database-port
+  selector:
+{{ include "webapp-contacts-charts.selectorLabelsDatabase" . | indent 4 }}
