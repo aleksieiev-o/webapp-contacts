@@ -1,0 +1,95 @@
+database:
+  replicaCount: 1
+  replication:
+    enabled: false
+  image:
+    repository: mariadb
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: "3306"
+  containerPort: "3306"
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
+    whenScaled: Retain
+  env:
+    NODE_ENV: production
+    HOST: 0.0.0.0
+    PORT: 4000
+    DB_HOST: webapp-contacts-charts-database.default.svc.cluster.local
+    DB_PORT: 3306
+    MARIADB_USER: dev
+    MARIADB_PASSWORD: root
+    MARIADB_DATABASE: contactsdatabase
+    MARIADB_ROOT_PASSWORD: root
+  volumeName: database-volume
+  volumeMountPath: /var/lib/mysql
+  storage: 128Mi
+
+backend:
+  replicaCount: 1
+  image:
+    repository: backend-local
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: NodePort
+    port: "4000"
+  containerPort: "4000"
+  env:
+    NODE_ENV: production
+    HOST: 0.0.0.0
+    PORT: 4000
+    DB_HOST: webapp-contacts-charts-database.default.svc.cluster.local
+    DB_PORT: 3306
+    MARIADB_USER: dev
+    MARIADB_PASSWORD: root
+    MARIADB_DATABASE: contactsdatabase
+    MARIADB_ROOT_PASSWORD: root
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: frontend-local
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: NodePort
+    port: "80"
+    nodePort: "30001"
+  containerPort: "80"
+  env:
+    NODE_ENV: production
+
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: contacts-app-local
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: webapp-contacts-charts-frontend
+              port:
+                number: 80
+        - path: /backend
+          pathType: Prefix
+          backend:
+            service:
+              name: webapp-contacts-charts-backend
+              port:
+                number: 4000
+  tls: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

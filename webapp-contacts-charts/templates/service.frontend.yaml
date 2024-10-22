@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-frontend
+  labels:
+{{ include "webapp-contacts-charts.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.frontend.service.type }}
+  ports:
+    - port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.containerPort }}
+      protocol: TCP
+      name: frontend-port
+      nodePort: {{ .Values.frontend.service.nodePort }}
+  selector:
+{{ include "webapp-contacts-charts.selectorLabelsFrontend" . | indent 4 }}

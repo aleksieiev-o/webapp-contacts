@@ -1,18 +1,53 @@
 variables:
+  PROJECT_HOST: contacts-app-education-2024-stage.tpcluster.de
+
   IMAGE_NAME_BACKEND: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
   IMAGE_NAME_FRONTEND: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
+
+  DEPLOY_MODE: 
+    value: upgrade
+    options:
+      - "upgrade"
+      - "delete"
+
+  RELEASE_NAME: webapp-contacts-charts
+  CHART_NAME: webapp-contacts-charts
 
 .docker_login: &docker_login
   - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 
 stages:
+  - push
   - build
   - deploy
+  - deploy-helm
 
 include:
   - project: 'teleport/ci-cd/ci-scripts'
     ref: master
-    file: 'before-script.yml'
+    file:
+    # it is used only by deploy to server, to connect using SSH
+    # - 'before-script.yml'
+    # it is used only by deploy to cluster
+    - 'before-deploy-stagecluster-script.yml'
+
+push_to_repo:
+  stage: push
+  image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      variables:
+        REPO: teleport-stable
+    - if: $CI_COMMIT_BRANCH == "dev"
+      variables:
+        REPO: teleport-stage
+      when: manual
+      allow_failure: true
+  script:
+    - |
+      helm package -u webapp-contacts-charts  # Ordnerpfad zur Chart.yaml
+      curl -u ${CI_NEXUS_USER}:${CI_NEXUS_PASSWORD} https://repo.tpdev.de/repository/$REPO/ --upload-file ${CHARTNAME}-*.tgz -s
+      rm ${CHARTNAME}-*.tgz
 
 backend_build:
   stage: build
@@ -63,3 +98,129 @@ deploy_stage:
       "MARIADB_PASSWORD='$DB_PASSWORD'"
       "MARIADB_DATABASE='$DB_NAME'"
       "MARIADB_ROOT_PASSWORD='$DB_ROOTPASSWORD'"
+
+helm_deploy:
+  stage: deploy-helm
+  image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      variables:
+        REPO: teleport-stage
+      when: manual
+    # - if: $CI_COMMIT_BRANCH != "dev" && $CI_COMMIT_BRANCH != "main"
+    #   variables:
+    #     REPO: .
+    #   when: manual
+    #   allow_failure: true
+  script:
+    - helm repo update
+    
+    - |
+      cat << EOF > values.yaml
+      imageCredentials:
+        password: ${CI_REGISTRY_PASSWORD}
+
+      database:
+        replicaCount: 1
+        replication:
+          enabled: false
+        image:
+          repository: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
+          tag: latest
+          pullPolicy: Always
+        service:
+          type: ClusterIP
+          port: 3306
+        persistentVolumeClaimRetentionPolicy:
+          whenDeleted: Retain
+          whenScaled: Retain
+        env:
+          NODE_ENV: production
+          HOST: 0.0.0.0
+          PORT: 4000
+          DB_HOST: ${RELEASE_NAME}-database.default.svc.cluster.local
+          DB_PORT: 3306
+          MARIADB_USER: ${DB_USER}
+          MARIADB_PASSWORD: ${DB_PASSWORD}
+          MARIADB_DATABASE: ${DB_NAME}
+          MARIADB_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+        volumeName: database-volume
+        volumeMountPath: /var/lib/mysql
+        storage: 128Mi
+
+      backend:
+        replicaCount: 1
+        image:
+          repository: ${IMAGE_NAME_BACKEND}
+          tag: latest
+          pullPolicy: Always
+        service:
+          type: ClusterIP
+          port: 4000
+        containerPort: "4000"
+        env:
+          NODE_ENV: production
+          HOST: 0.0.0.0
+          PORT: 4000
+          DB_HOST: ${RELEASE_NAME}-database.default.svc.cluster.local
+          DB_PORT: 3306
+          MARIADB_USER: ${DB_USER}
+          MARIADB_PASSWORD: ${DB_PASSWORD}
+          MARIADB_DATABASE: ${DB_NAME}
+          MARIADB_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+
+      frontend:
+        replicaCount: 1
+        image:
+          repository: ${IMAGE_NAME_FRONTEND}
+          tag: latest
+          pullPolicy: Always
+        service:
+          type: NodePort
+          port: 80
+          nodePort: "30004"
+        env:
+          NODE_ENV: production
+
+      ingress:
+        enabled: true
+        className: "nginx"
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        hosts:
+          - host: ${PROJECT_HOST}
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: ${RELEASE_NAME}-frontend
+                    port:
+                      number: 80
+              - path: /backend
+                pathType: Prefix
+                backend:
+                  service:
+                    name: ${RELEASE_NAME}-backend
+                    port:
+                      number: 4000
+        tls:
+          - secretName: tls-secret
+            hosts:
+              - ${PROJECT_HOST}
+
+      autoscaling:
+        enabled: false
+        minReplicas: 1
+        maxReplicas: 1
+        targetCPUUtilizationPercentage: 80
+        targetMemoryUtilizationPercentage: 80
+      EOF
+
+    - |
+      if [ ${DEPLOY_MODE} == 'delete' ]
+      then
+        helm uninstall ${RELEASE_NAME}
+      else
+        helm ${DEPLOY_MODE} --install ${RELEASE_NAME} ${REPO}/${CHART_NAME} -f ./values.yaml --version 0.1.0
+      fi

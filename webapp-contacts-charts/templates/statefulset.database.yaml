@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-database
+  labels:
+{{ include "webapp-contacts-charts.labels" . | indent 4 }}
+spec:
+  serviceName: {{ .Release.Name }}-database
+  replicas: {{ .Values.database.replicaCount }}
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: {{ .Values.database.persistentVolumeClaimRetentionPolicy.whenDeleted }}
+    whenScaled: {{ .Values.database.persistentVolumeClaimRetentionPolicy.whenScaled }}
+  selector:
+    matchLabels:
+{{ include "webapp-contacts-charts.selectorLabelsDatabase" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "webapp-contacts-charts.selectorLabelsDatabase" . | indent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "webapp-contacts-charts.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Release.Name }}-database
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+          ports:
+          - name: database-port
+            containerPort: {{ .Values.database.service.port }}
+            protocol: TCP
+          env:
+          - name: NODE_ENV
+            value: {{ .Values.database.env.NODE_ENV }}
+          - name: HOST
+            value: {{ .Values.database.env.HOST }}
+          - name: PORT
+            value: "3000"
+            # value: {{ .Values.database.env.PORT }}
+          - name: DB_HOST
+            value: {{ .Values.database.env.DB_HOST }}
+          - name: DB_PORT
+            value: "3306"
+            # value: {{ .Values.database.env.DB_PORT }}
+          - name: MARIADB_USER
+            value: {{ .Values.database.env.MARIADB_USER }}
+          - name: MARIADB_PASSWORD
+            value: {{ .Values.database.env.MARIADB_PASSWORD }}
+          - name: MARIADB_DATABASE
+            value: {{ .Values.database.env.MARIADB_DATABASE }}
+          - name: MARIADB_ROOT_PASSWORD
+            value: {{ .Values.database.env.MARIADB_ROOT_PASSWORD }}
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            tcpSocket:
+              port: {{ .Values.database.service.port }}
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            tcpSocket:
+              port: {{ .Values.database.service.port }}
+          volumeMounts:
+          - name: {{ .Values.database.volumeName }}
+            mountPath: {{ .Values.database.volumeMountPath }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: {{ .Values.database.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-database-pvc
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
