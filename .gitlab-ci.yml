@@ -1,5 +1,5 @@
 variables:
-  PROJECT_HOST: contacts-app-education-2024.tpcluster.de
+  PROJECT_HOST: contacts-app-education-2024-stage.tpcluster.de
 
   IMAGE_NAME_BACKEND: crtpdev.azurecr.io/tsa/education/2024/contacts-backend
   IMAGE_NAME_FRONTEND: crtpdev.azurecr.io/tsa/education/2024/contacts-frontend
