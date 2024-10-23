@@ -8,22 +8,23 @@ export const createContactValidation = {
       invalid_type_error: 'Value must be a string',
     })
     .trim()
-    .min(3, 'Value must be at least 3 characters')
-    .max(100, 'Value must not exceed 100 characters'),
+    .min(1, 'Value must be at least 1 character')
+    .max(64, 'Value must not exceed 64 characters'),
   firstName: z
     .string({
       required_error: 'Field is required',
       invalid_type_error: 'Value must be a string',
     })
     .trim()
-    .min(3, 'Value must be at least 3 characters')
-    .max(100, 'Value must not exceed 100 characters'),
+    .min(1, 'Value must be at least 1 character')
+    .max(64, 'Value must not exceed 64 characters'),
   street: z.optional(
     z
       .string({
         invalid_type_error: 'Value must be a string',
       })
       .trim()
+      .min(1, 'Value must be at least 1 character')
       .max(255, 'Value must not exceed 255 characters')
       .transform((val) => (val.length === 0 ? undefined : val)),
   ),
@@ -33,7 +34,8 @@ export const createContactValidation = {
         invalid_type_error: 'Value must be a string',
       })
       .trim()
-      .max(50, 'Value must not exceed 50 characters')
+      .min(1, 'Value must be at least 1 character')
+      .max(7, 'Value must not exceed 7 characters')
       .transform((val) => (val.length === 0 ? undefined : val)),
   ),
   city: z.optional(
@@ -42,7 +44,7 @@ export const createContactValidation = {
         invalid_type_error: 'Value must be a string',
       })
       .trim()
-      .max(100, 'Value must not exceed 100 characters')
+      .max(85, 'Value must not exceed 85 characters')
       .transform((val) => (val.length === 0 ? undefined : val)),
   ),
   postalCode: z.optional(
@@ -51,6 +53,7 @@ export const createContactValidation = {
         invalid_type_error: 'Value must be a string',
       })
       .trim()
+      .min(2, 'Value must be at least 2 characters')
       .max(5, 'Value must not exceed 5 characters')
       .transform((val) => (val.length === 0 ? undefined : val)),
   ),

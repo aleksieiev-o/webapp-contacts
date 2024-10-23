@@ -8,5 +8,5 @@ export const createPhoneValidation = {
     })
     .trim()
     .min(4, 'Value must be at least 4 characters')
-    .max(100, 'Value must not exceed 100 characters'),
+    .max(38, 'Value must not exceed 38 characters'),
 };
