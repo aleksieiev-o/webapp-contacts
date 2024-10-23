@@ -41,13 +41,11 @@ spec:
           - name: HOST
             value: {{ .Values.database.env.HOST }}
           - name: PORT
-            value: "3000"
-            # value: {{ .Values.database.env.PORT }}
+            value: {{ .Values.database.env.PORT | quote }}
           - name: DB_HOST
             value: {{ .Values.database.env.DB_HOST }}
           - name: DB_PORT
-            value: "3306"
-            # value: {{ .Values.database.env.DB_PORT }}
+            value: {{ .Values.database.env.DB_PORT | quote }}
           - name: MARIADB_USER
             value: {{ .Values.database.env.MARIADB_USER }}
           - name: MARIADB_PASSWORD
@@ -56,9 +54,15 @@ spec:
             value: {{ .Values.database.env.MARIADB_DATABASE }}
           - name: MARIADB_ROOT_PASSWORD
             value: {{ .Values.database.env.MARIADB_ROOT_PASSWORD }}
+          startupProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 15
+            tcpSocket:
+              port: {{ .Values.database.service.port }}
           livenessProbe:
-            initialDelaySeconds: 20
             periodSeconds: 5
+            failureThreshold: 2
             tcpSocket:
               port: {{ .Values.database.service.port }}
           readinessProbe:

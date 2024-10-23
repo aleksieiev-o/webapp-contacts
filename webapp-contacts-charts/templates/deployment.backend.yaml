@@ -50,13 +50,19 @@ spec:
             value: {{ .Values.backend.env.MARIADB_DATABASE }}
           - name: MARIADB_ROOT_PASSWORD
             value: {{ .Values.backend.env.MARIADB_ROOT_PASSWORD }}
+          startupProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 10
+            tcpSocket:
+              port: {{ .Values.backend.service.port }}
           livenessProbe:
-            initialDelaySeconds: 25
             periodSeconds: 5
+            failureThreshold: 2
             tcpSocket:
               port: {{ .Values.backend.service.port }}
           readinessProbe:
-            initialDelaySeconds: 25
+            initialDelaySeconds: 10
             periodSeconds: 5
             tcpSocket:
               port: {{ .Values.backend.service.port }}
