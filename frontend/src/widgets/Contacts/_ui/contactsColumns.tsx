@@ -67,14 +67,16 @@ export const contactsColumns = [
     cell: ({ row }) => (
       <>
         {getPhones(row).length > 0 ? (
-          <div className="w-full flex flex-row items-center justify-start gap-4">
+          <div className="flex flex-row items-center justify-start gap-4 overflow-hidden">
             {showContactPhonesNumber(getPhones(row).length)}
 
             <ScrollArea className={cn(getPhones(row).length > 1 ? 'h-[70px]' : '', 'rounded-md')}>
               <>
                 {getPhones(row).map((item, _idx, arr) => (
                   <div key={item.id} className="pr-3">
-                    <span className="md:max-w-40 max-w-28 overflow-hidden text-ellipsis whitespace-nowrap text-start">{item.phone}</span>
+                    <p className="md:w-40 w-28 text-ellipsis whitespace-nowrap text-start overflow-hidden" title={item.phone}>
+                      {item.phone}
+                    </p>
                     {arr.length > 1 && <Separator className="my-2" />}
                   </div>
                 ))}
