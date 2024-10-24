@@ -3,9 +3,8 @@ import { IPhone } from './Phone';
 
 export interface IContact extends IBasePartOfEntity {
   id: string;
-  lastName: string;
   firstName: string;
-
+  lastName: string;
   street?: string;
   houseNumber?: string;
   city?: string;

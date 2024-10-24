@@ -1,34 +1,37 @@
 import { IsString, Length, IsNotEmpty, ArrayMinSize, IsArray } from 'class-validator';
 import { PhoneEntity } from '../entities/phone.entity';
+import { contactValueLengths } from 'src/contacts/_constant';
+
+const { firstName, lastName, street, houseNumber, city, postalCode, phones } = contactValueLengths;
 
 export class CreateContactDTO {
   @IsNotEmpty()
   @IsString()
-  @Length(3, 100)
-  readonly lastName: string;
+  @Length(firstName.min, firstName.max)
+  readonly firstName: string;
 
   @IsNotEmpty()
   @IsString()
-  @Length(3, 100)
-  readonly firstName: string;
+  @Length(lastName.min, lastName.max)
+  readonly lastName: string;
 
   @IsString()
-  @Length(0, 255)
+  @Length(street.min, street.max)
   readonly street: string;
 
   @IsString()
-  @Length(0, 50)
+  @Length(houseNumber.min, houseNumber.max)
   readonly houseNumber: string;
 
   @IsString()
-  @Length(0, 100)
+  @Length(city.min, city.max)
   readonly city: string;
 
   @IsString()
-  @Length(0, 5)
+  @Length(postalCode.min, postalCode.max)
   readonly postalCode: string;
 
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(phones.min)
   readonly phones: PhoneEntity[];
 }

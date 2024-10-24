@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { phoneValueLengths } from './_constant';
+
+const { phone } = phoneValueLengths;
 
 export const createPhoneValidation = {
   phone: z
@@ -7,6 +10,6 @@ export const createPhoneValidation = {
       invalid_type_error: 'Value must be a string',
     })
     .trim()
-    .min(4, 'Value must be at least 4 characters')
-    .max(38, 'Value must not exceed 38 characters'),
+    .min(phone.min, `Value must be at least ${phone.min} characters`)
+    .max(phone.max, `Value must not exceed ${phone.max} characters`),
 };
