@@ -208,7 +208,7 @@ deploy_helm:
                     port:
                       number: 4000
         tls:
-          - secretName: tls-secret
+          - secretName: ssl-secret
             hosts:
               - ${PROJECT_HOST}
 
