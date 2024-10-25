@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import PhonesListForm from './_widgets/PhonesList.form';
 import { transformNullToUndefined } from '@/shared/utils/transformDatabaseValues';
 import { createContactValidation } from './_validations/createContact.validation';
+import { AxiosResponseExceptionData } from '@/shared/types/Exceptions';
 
 interface Props {
   mode: 'create' | 'update';
@@ -65,10 +66,17 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
     navigate(ERouter.CONTACTS);
   };
 
-  const onErrorCallback = async (): Promise<void> => {
+  const onErrorCallback = async (error: AxiosResponseExceptionData): Promise<void> => {
     toast({
       title: 'Failure',
-      description: 'An error occurred. Something went wrong.',
+      description: (
+        <div className="flex flex-col items-start justify-start gap-2">
+          <p>
+            Status: <strong>{error.status}</strong>
+          </p>
+          <p>An error occurred. {error.message}</p>
+        </div>
+      ),
       variant: 'destructive',
     });
   };
@@ -94,8 +102,8 @@ const CreateUpdateContactForm: FC<Props> = (props): ReactElement => {
     onSuccess: async () => {
       await onSuccessCallback();
     },
-    onError: async (error, variables) => {
-      await onErrorCallback();
+    onError: async (error: AxiosResponseExceptionData, variables) => {
+      await onErrorCallback(error);
       console.warn(error, variables);
     },
     onSettled: async () => {

@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ContactEntity } from './entities/contact.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateContactDTO } from './dto/createContact.dto';
 import { UpdateContactDTO } from './dto/updateContact.dto';
 import { PhoneEntity } from './entities/phone.entity';
+import { CustomResponse } from './types';
 
 @Injectable()
 export class ContactsService {
@@ -20,31 +21,41 @@ export class ContactsService {
     try {
       return await this.contactRepository.find({ relations: ['phones'] });
     } catch (err) {
-      return new NotFoundException('Contacts not found.', err);
+      throw new NotFoundException(err);
     }
   }
 
-  async findOneById(id: string): Promise<ContactEntity | NotFoundException> {
-    return await this.findOneContactById(id);
+  async findOneById(id: string): CustomResponse<ContactEntity> {
+    try {
+      const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
+
+      if (!contact) {
+        throw new BadRequestException();
+      }
+
+      return contact;
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
   }
 
-  async create(payload: CreateContactDTO): Promise<ContactEntity | NotFoundException> {
+  async create(payload: CreateContactDTO): CustomResponse<ContactEntity> {
     try {
       const contact = this.contactRepository.create(payload);
 
       return await this.contactRepository.save(contact);
     } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`, err);
+      throw new BadRequestException(err);
     }
   }
 
-  async update(id: string, payload: UpdateContactDTO): Promise<ContactEntity | NotFoundException> {
+  async update(id: string, payload: UpdateContactDTO): CustomResponse<ContactEntity> {
     try {
       const { lastName, firstName, street, houseNumber, city, postalCode, phones } = payload;
       const currentContactToUpdate = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
 
       if (!currentContactToUpdate) {
-        throw new NotFoundException(`Contact with id '${id}' not found.`);
+        throw new BadRequestException();
       }
 
       Object.assign(currentContactToUpdate, { lastName, firstName, street, houseNumber, city, postalCode });
@@ -65,35 +76,21 @@ export class ContactsService {
 
       return await this.contactRepository.save(currentContactToUpdate);
     } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`, err);
+      throw new BadRequestException(err);
     }
   }
 
-  async removeById(id: string): Promise<ContactEntity | NotFoundException> {
+  async removeById(id: string): CustomResponse<ContactEntity> {
     try {
       const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
 
       if (!contact) {
-        throw new NotFoundException(`Contact with id '${id}' not found.`);
+        throw new BadRequestException();
       }
 
       return await this.contactRepository.remove(contact);
     } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`, err);
-    }
-  }
-
-  private async findOneContactById(id: string): Promise<ContactEntity | NotFoundException> {
-    try {
-      const contact = await this.contactRepository.findOne({ where: { id }, relations: ['phones'] });
-
-      if (!contact) {
-        throw new NotFoundException(`Contact with id '${id}' not found.`);
-      }
-
-      return contact;
-    } catch (err) {
-      return new NotFoundException(`An error occurred: ${err}`, err);
+      throw new BadRequestException(err);
     }
   }
 }

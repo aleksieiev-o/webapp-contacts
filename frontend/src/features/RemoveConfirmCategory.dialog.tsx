@@ -6,6 +6,7 @@ import RemoveConfirmDialog from '@/shared/ui/appDialog/RemoveConfirm.dialog';
 import { ERouter } from '@/shared/router';
 import { IContact } from '@/shared/types/Contact';
 import { removeContactById } from '@/entities/contacts/contacts.service';
+import { AxiosResponseExceptionData } from '@/shared/types/Exceptions';
 
 interface Props {
   contact: IContact;
@@ -30,10 +31,17 @@ const RemoveConfirmContactDialog: FC<Props> = (props): ReactElement => {
     });
   };
 
-  const onErrorCallback = async (): Promise<void> => {
+  const onErrorCallback = async (error: AxiosResponseExceptionData): Promise<void> => {
     toast({
       title: 'Failure',
-      description: 'An error occurred. Something went wrong.',
+      description: (
+        <div className="flex flex-col items-start justify-start gap-2">
+          <p>
+            Status: <strong>{error.status}</strong>
+          </p>
+          <p>An error occurred. {error.message}</p>
+        </div>
+      ),
       variant: 'destructive',
     });
   };
@@ -48,8 +56,8 @@ const RemoveConfirmContactDialog: FC<Props> = (props): ReactElement => {
     onSuccess: async () => {
       await onSuccessCallback();
     },
-    onError: async (error, variables) => {
-      await onErrorCallback();
+    onError: async (error: AxiosResponseExceptionData, variables) => {
+      await onErrorCallback(error);
       console.warn(error, variables);
     },
     onSettled: async () => {
