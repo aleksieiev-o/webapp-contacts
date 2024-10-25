@@ -10,7 +10,7 @@ export const fetchAllData = async <T>(endpoint: EndpointsList): Promise<T[]> => 
     .then(({ data }) => data)
     .catch((err: AxiosError<AxiosResponseExceptionData>) => {
       console.warn(err.code, err.message, err);
-      return Promise.reject<T[]>([]);
+      return Promise.reject(err.response?.data);
     });
 };
 

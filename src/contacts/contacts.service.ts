@@ -21,7 +21,7 @@ export class ContactsService {
     try {
       return await this.contactRepository.find({ relations: ['phones'] });
     } catch (err) {
-      throw new NotFoundException(err);
+      throw new BadRequestException(err);
     }
   }
 

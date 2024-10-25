@@ -1,9 +1,10 @@
 import { CreateContactDTO, IContact, UpdateContactDTO } from '@/shared/types/Contact';
 import { fetchAllData, fetchDataItemById, removeDataItemById, updateDataItemById } from '../_db.service';
 import { EndpointsList } from '@/shared/Endpoints.enum';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { apiClient } from '../_api/apiClient';
 import { createDataEndpoint } from '../_vm/user';
+import { AxiosResponseExceptionData } from '@/shared/types/Exceptions';
 
 const sortLastName = <T extends { lastName: string }>(payload: T[], sortType: 'AZ' | 'ZA'): T[] => {
   if (payload instanceof Array) {
@@ -34,9 +35,9 @@ export const createContact = async (payload: CreateContactDTO): Promise<IContact
 
   return response
     .then(({ data }) => data)
-    .catch((err) => {
-      console.warn(err);
-      return Promise.reject(err);
+    .catch((err: AxiosError<AxiosResponseExceptionData>) => {
+      console.warn(err.code, err.message, err);
+      return Promise.reject(err.response?.data);
     });
 };
 
