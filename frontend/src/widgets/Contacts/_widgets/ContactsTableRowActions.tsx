@@ -4,7 +4,7 @@ import TableActionsDropdown from '@/shared/ui/AppTable/widgets/TableActions.drop
 import ContactDetailsDialog from '../_ui/ContactDetails.dialog';
 import { ERouter } from '@/shared/router';
 import { IContact } from '@/shared/types/Contact';
-import RemoveConfirmContactDialog from '@/features/RemoveConfirmCategory.dialog';
+import RemoveConfirmContactDialog from '@/features/RemoveConfirmContact.dialog';
 
 interface Props<TData> {
   row: Row<TData>;
