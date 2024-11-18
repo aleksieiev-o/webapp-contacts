@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, Length } from 'class-validator';
-import { phoneValueLengths } from 'src/contacts/_constant';
+import { phoneEntityFieldsRules } from 'src/shared/entities/entitiesFieldsRules/phoneEntityFieldsRules';
 
-const { phone } = phoneValueLengths;
+const { phone } = phoneEntityFieldsRules;
 
 export class CreatePhoneDTO {
   @IsNotEmpty()

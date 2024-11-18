@@ -1,7 +1,13 @@
+import { CreatePhoneDTO } from '@/shared/types/Phone';
 import { z } from 'zod';
-import { phoneValueLengths } from './_constant';
 
-const { phone } = phoneValueLengths;
+type PhoneEntityFieldsRules = { [key in keyof CreatePhoneDTO]: { min: number; max: number } };
+
+const phoneEntityFieldsRules: PhoneEntityFieldsRules = {
+  phone: { min: 3, max: 38 },
+};
+
+const { phone } = phoneEntityFieldsRules;
 
 export const createPhoneValidation = {
   phone: z

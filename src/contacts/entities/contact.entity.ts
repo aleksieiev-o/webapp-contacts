@@ -2,9 +2,9 @@ import { BasePartOfEntity } from 'src/shared/entities/basePart.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { EContactEntities } from '../../shared/entities/types';
 import { PhoneEntity } from './phone.entity';
-import { contactValueLengths } from 'src/contacts/_constant';
+import { contactEntityFieldsRules } from 'src/shared/entities/entitiesFieldsRules/contactEntityFieldsRules';
 
-const { firstName, lastName, street, houseNumber, city, postalCode } = contactValueLengths;
+const { firstName, lastName, street, houseNumber, city, postalCode } = contactEntityFieldsRules;
 
 @Entity({ name: EContactEntities.CONTACTS })
 export class ContactEntity extends BasePartOfEntity {
