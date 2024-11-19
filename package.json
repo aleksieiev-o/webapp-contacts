@@ -21,7 +21,9 @@
     "prepare": "husky || true",
     "build:all": "npm run build && cd frontend && npm run build",
     "lint:all": "npm run lint && cd frontend && npm run lint",
-    "lint:all:fix": "npm run format && cd frontend && npm run lint:fix"
+    "lint:all:fix": "npm run format && cd frontend && npm run lint:fix",
+    "db:migrate": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./src/database/migrations/migrate.ts",
+    "db:seed": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./src/database/seeds/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -36,12 +38,14 @@
     "cross-var": "^1.1.0",
     "mariadb": "^3.3.1",
     "mysql2": "^3.11.0",
-    "reflect-metadata": "^0.2.0",
+    "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
+    "typeorm-extension": "^3.6.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.2.0",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",

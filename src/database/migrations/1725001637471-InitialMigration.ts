@@ -3,6 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class InitialMigration1725001637471 implements MigrationInterface {
   name = 'InitialMigration1725001637471';
   transaction: true;
+  dataBase = process.env.MARIADB_DATABASE || 'contactsdatabase';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     const isContactsTableExist = await queryRunner.hasTable('contacts');
@@ -38,6 +39,6 @@ export class InitialMigration1725001637471 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE phones`);
     await queryRunner.query(`DROP TABLE contacts`);
-    await queryRunner.query('DROP DATABASE contactsdatabase');
+    await queryRunner.query(`DROP DATABASE ${this.dataBase}`);
   }
 }

@@ -26,8 +26,16 @@
   MARIADB_PASSWORD=root
   MARIADB_DATABASE=contactsdatabase
   MARIADB_ROOT_PASSWORD=root
-  MARIADB_DATABASE=contactsdatabase
   ```
+
+- Create the database named 'contactsdatabase':
+
+  ```
+  CREATE DATABASE 'contactsdatabase';
+  ```
+
+- Run the migrate command `npm run db:migrate` if it is necessary and run the seed command `npm run db:seed` if it is necessary.
+  Otherwise, the tables will be created automatically with the command `npm run start:dev`
 
 - Run the both parts of the project locally in development mode:
 
@@ -35,8 +43,6 @@
   npm run start:dev
   npm run dev
   ```
-
-- The database will be created automatic with name `contactsdatabase`;
 
 ##### Here are the recommended steps, to create and start the project in a docker container on your local machine:
 
