@@ -2,7 +2,7 @@
 
 #### Getting started
 
-##### Here are the recommended steps, to start the project on your local machine:
+##### Here are the recommended steps, to start the project on your local machine (in development mode):
 
 - Clone this repository to your local machine;
 
@@ -28,13 +28,9 @@
   MARIADB_ROOT_PASSWORD=root
   ```
 
-- Create the database named 'contactsdatabase':
+- Create the database named 'contactsdatabase': `CREATE DATABASE 'contactsdatabase';` using the MariaDB command prompt.
 
-  ```
-  CREATE DATABASE 'contactsdatabase';
-  ```
-
-- Run the migrate command `npm run db:migrate` if it is necessary and run the seed command `npm run db:seed` if it is necessary.
+- Run the migrate command `npm run db:migrate:dev` if it is necessary and run the seed command `npm run db:seed:dev` if it is necessary.
   Otherwise, the tables will be created automatically with the command `npm run start:dev`
 
 - Run the both parts of the project locally in development mode:
