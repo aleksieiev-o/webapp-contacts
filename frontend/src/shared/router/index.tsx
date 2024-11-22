@@ -20,13 +20,27 @@ export enum ERouterTitle {
   NOT_FOUND = 'Page not found',
 }
 
-export const router = createBrowserRouter([
-  { path: ERouter.HOME, element: <Home /> },
-  { path: ERouter.CONTACTS, element: <Contacts /> },
-  { path: ERouter.CONTACTS_CREATE, element: <CreateContact /> },
-  { path: ERouter.CONTACTS_UPDATE, element: <UpdateContact /> },
-  {
-    path: ERouter.NOT_FOUND,
-    element: <Navigate to={ERouter.HOME} replace={true} />,
+const browserRouterOptions = {
+  future: {
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_relativeSplatPath: true,
+    v7_skipActionErrorRevalidation: true,
+    v7_startTransition: true,
   },
-]);
+};
+
+export const router = createBrowserRouter(
+  [
+    { path: ERouter.HOME, element: <Home /> },
+    { path: ERouter.CONTACTS, element: <Contacts /> },
+    { path: ERouter.CONTACTS_CREATE, element: <CreateContact /> },
+    { path: ERouter.CONTACTS_UPDATE, element: <UpdateContact /> },
+    {
+      path: ERouter.NOT_FOUND,
+      element: <Navigate to={ERouter.HOME} replace={true} />,
+    },
+  ],
+  browserRouterOptions,
+);
