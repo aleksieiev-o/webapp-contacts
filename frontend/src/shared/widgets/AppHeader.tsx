@@ -4,7 +4,7 @@ import { ERouter } from '../router';
 
 const AppHeader: FC = (): ReactElement => {
   return (
-    <header className="flex w-full flex-row items-center justify-between gap-4 overflow-hidden p-4 shadow-md">
+    <header className="flex w-full flex-row items-center justify-between gap-4 p-4 shadow-md">
       <Link to={ERouter.HOME}>
         <span className="text-2xl font-bold">WebApp Contacts</span>
       </Link>
