@@ -2,13 +2,13 @@ import { ERouter } from '@/shared/router';
 import { useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, SortingState } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
 import { FC, ReactElement, useMemo, useState } from 'react';
-import { Input } from '@/components/shadcn/ui/input';
 import { Button } from '@/components/shadcn/ui/button';
 import { Plus } from 'lucide-react';
 import { contactsColumns } from './_ui/contactsColumns';
 import AppTable from '@/shared/ui/AppTable/AppTable';
 import { fetchAllContacts } from '@/entities/contacts/contacts.service';
 import { Link } from 'react-router-dom';
+import DebouncedInput from '@/shared/ui/DebouncedInput';
 
 const ContactsTable: FC = (): ReactElement => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -45,10 +45,11 @@ const ContactsTable: FC = (): ReactElement => {
   return (
     <div className="flex h-full w-full flex-col gap-6 py-6">
       <div className="flex w-full items-end justify-between gap-6 flex-row">
-        <Input
-          onChange={(event) => setColumnFilters(event.target.value)}
+        <DebouncedInput
+          onChange={(value) => setColumnFilters(value)}
+          outerValue={columnFilters}
+          debounce={200}
           disabled={!contactsQueryData || !contactsQueryData.length}
-          value={columnFilters}
           placeholder="Contacts filter"
           title="Contacts filter"
           className="h-12 w-full"
