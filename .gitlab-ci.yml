@@ -10,15 +10,17 @@ variables:
       - "upgrade"
       - "delete"
 
-  RELEASE_NAME: webapp-contacts-charts
+  CHART_NAMESPACE: contacts_education_2024
   CHART_NAME: webapp-contacts-charts
+  CHART_VERSION: 0.1.0
+  RELEASE_NAME: webapp-contacts-charts
 
 .docker_login: &docker_login
   - docker login crtpdev.azurecr.io -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 
 stages:
   - build
-  - deploy
+  # - deploy
   - push
   - deploy-helm
 
@@ -87,12 +89,12 @@ push_to_repo:
   extends: [.docker_before]
   image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
   rules:
-    - if: $CI_COMMIT_TAG != null
-      variables:
-        REPO: teleport-stable
+    # - if: $CI_COMMIT_TAG != null
+    #   variables:
+    #     REPO: teleport-stable
     - if: $CI_COMMIT_BRANCH == "dev"
       variables:
-        REPO: teleport-stage
+        REPO: teleport-stable # teleport-stage
       changes: 
         - ${CHART_NAME}/*/**
   script:
@@ -108,7 +110,7 @@ deploy_helm:
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
       variables:
-        REPO: teleport-stage
+        REPO: teleport-stable # teleport-stage
       when: manual
     # - if: $CI_COMMIT_BRANCH != "dev" && $CI_COMMIT_BRANCH != "main"
     #   variables:
@@ -221,9 +223,13 @@ deploy_helm:
       EOF
 
     - |
-      if [ ${DEPLOY_MODE} == 'delete' ]
-      then
-        helm uninstall ${RELEASE_NAME}
+      if helm search repo ${REPO} | grep -q "${CHART_NAME}"; then
+        if [ ${DEPLOY_MODE} == 'delete' ]; then
+          helm uninstall ${RELEASE_NAME}
+        else
+          helm ${DEPLOY_MODE} --install ${RELEASE_NAME} ${REPO}/${CHART_NAME} -f ./values.yaml --version ${CHART_VERSION} --namespace ${CHART_NAMESPACE} --create-namespace
+        fi
       else
-        helm ${DEPLOY_MODE} --install ${RELEASE_NAME} ${REPO}/${CHART_NAME} -f ./values.yaml --version 0.1.0 --namespace contacts_education_2024 --create-namespace
+        echo "Error: Chart ${CHART_NAME} not found in ${REPO}"
+        exit 1
       fi
