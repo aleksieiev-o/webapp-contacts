@@ -57,32 +57,32 @@ frontend_build:
     - docker push ${IMAGE_NAME_FRONTEND}
     - docker rmi ${IMAGE_NAME_FRONTEND}
 
-deploy_stage:
-  stage: deploy
-  extends: [.docker_before]
-  rules:
-    - if: $CI_COMMIT_BRANCH == "dev"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "dev"
-      when: on_success
-  script:
-    - mkdir -p ~/.ssh
-    - eval "$(ssh-agent -s)"
-    - echo "$SSH_IDENTITY_FILE" | tr -d '\r' | ssh-add -
+# deploy_stage:
+#   stage: deploy
+#   extends: [.docker_before]
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#       when: manual
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#       when: on_success
+#   script:
+#     - mkdir -p ~/.ssh
+#     - eval "$(ssh-agent -s)"
+#     - echo "$SSH_IDENTITY_FILE" | tr -d '\r' | ssh-add -
 
-    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
+#     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
 
-    - >
-      ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage.sh
-      "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
-      "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"
-      "CI_REGISTRY_USER='$CI_REGISTRY_USER'"
-      "CI_REGISTRY_PASSWORD='$CI_REGISTRY_PASSWORD'"
-      "MARIADB_USER='$DB_USER'"
-      "MARIADB_PASSWORD='$DB_PASSWORD'"
-      "MARIADB_DATABASE='$DB_NAME'"
-      "MARIADB_ROOT_PASSWORD='$DB_ROOTPASSWORD'"
+#     - >
+#       ssh $SSH_USER@$SSH_HOST "bash -s" -- < ./deploy/deploy-stage.sh
+#       "DOCKER_REGISTRY_URL='$DOCKER_REGISTRY_URL'"
+#       "DOCKER_REGISTRY_AUTH='$DOCKER_REGISTRY_AUTH'"
+#       "CI_REGISTRY_USER='$CI_REGISTRY_USER'"
+#       "CI_REGISTRY_PASSWORD='$CI_REGISTRY_PASSWORD'"
+#       "MARIADB_USER='$DB_USER'"
+#       "MARIADB_PASSWORD='$DB_PASSWORD'"
+#       "MARIADB_DATABASE='$DB_NAME'"
+#       "MARIADB_ROOT_PASSWORD='$DB_ROOTPASSWORD'"
 
 push_to_repo:
   stage: push
