@@ -225,5 +225,5 @@ deploy_helm:
       then
         helm uninstall ${RELEASE_NAME}
       else
-        helm ${DEPLOY_MODE} --install ${RELEASE_NAME} ${REPO}/${CHART_NAME} -f ./values.yaml --version 0.1.0
+        helm ${DEPLOY_MODE} --install ${RELEASE_NAME} ${REPO}/${CHART_NAME} -f ./values.yaml --version 0.1.0 --namespace contacts_education_2024 --create-namespace
       fi
