@@ -12,7 +12,7 @@ variables:
 
   CHART_NAMESPACE: contacts-education-2024
   CHART_NAME: webapp-contacts-charts
-  CHART_VERSION: 0.1.0
+  CHART_VERSION: 0.1.1
   RELEASE_NAME: webapp-contacts-charts
 
 .docker_login: &docker_login
@@ -86,15 +86,14 @@ frontend_build:
 
 push_to_repo:
   stage: push
-  extends: [.docker_before]
   image: crtpdev.azurecr.io/teleport/ci-cd/helm:latest
   rules:
-    # - if: $CI_COMMIT_TAG != null
-    #   variables:
-    #     REPO: teleport-stable
+    - if: $CI_COMMIT_TAG != null
+      variables:
+        REPO: teleport-stable
     - if: $CI_COMMIT_BRANCH == "dev"
       variables:
-        REPO: teleport-stable # teleport-stage
+        REPO: teleport-stage
       changes: 
         - ${CHART_NAME}/*/**
   script:
@@ -110,7 +109,7 @@ deploy_helm:
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
       variables:
-        REPO: teleport-stable # teleport-stage
+        REPO: teleport-stage
       when: manual
     # - if: $CI_COMMIT_BRANCH != "dev" && $CI_COMMIT_BRANCH != "main"
     #   variables:
@@ -130,8 +129,8 @@ deploy_helm:
         replication:
           enabled: false
         image:
-          repository: crtpdev.azurecr.io/mariadb:10.11.6-debian-11-r6
-          tag: latest
+          repository: crtpdev.azurecr.io/mariadb
+          tag: 10.11.6-debian-11-r6
           pullPolicy: Always
         service:
           type: ClusterIP
