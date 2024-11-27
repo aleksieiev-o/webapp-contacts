@@ -10,7 +10,7 @@ variables:
       - "upgrade"
       - "delete"
 
-  CHART_NAMESPACE: contacts_education_2024
+  CHART_NAMESPACE: contacts-education-2024
   CHART_NAME: webapp-contacts-charts
   CHART_VERSION: 0.1.0
   RELEASE_NAME: webapp-contacts-charts
