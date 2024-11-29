@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ .Release.Name }}-database
   labels:
+{{ include "common.labels.standard" . | indent 4 }}
 {{ include "webapp-contacts-charts.labels" . | indent 4 }}
 spec:
   serviceName: {{ .Release.Name }}-database
@@ -18,10 +19,8 @@ spec:
       labels:
 {{ include "webapp-contacts-charts.selectorLabelsDatabase" . | indent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+      - name: "{{ .Release.Name }}-{{ .Values.imageCredentials.name }}"
       serviceAccountName: {{ template "webapp-contacts-charts.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}

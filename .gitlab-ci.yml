@@ -129,6 +129,8 @@ deploy_helm:
       imageCredentials:
         password: ${CI_REGISTRY_PASSWORD}
 
+      namespace: ${CHART_NAMESPACE}
+
       database:
         replicaCount: 1
         replication:

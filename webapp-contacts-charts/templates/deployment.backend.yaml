@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-backend
   labels:
+{{ include "common.labels.standard" . | indent 4 }}
 {{ include "webapp-contacts-charts.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.backend.replicaCount }}
@@ -14,10 +15,8 @@ spec:
       labels:
 {{ include "webapp-contacts-charts.selectorLabelsBackend" . | indent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+      - name: "{{ .Release.Name }}-{{ .Values.imageCredentials.name }}"
       serviceAccountName: {{ template "webapp-contacts-charts.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
