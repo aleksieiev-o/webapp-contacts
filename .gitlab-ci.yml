@@ -61,10 +61,7 @@ frontend_build:
 #   stage: deploy
 #   extends: [.docker_before]
 #   rules:
-#     - if: $CI_COMMIT_BRANCH == "dev"
-#       when: manual
-#     - if: $CI_COMMIT_BRANCH == "dev"
-#       when: on_success
+#     - if: $CI_PIPELINE_SOURCE == "web"
 #   script:
 #     - mkdir -p ~/.ssh
 #     - eval "$(ssh-agent -s)"
@@ -95,8 +92,6 @@ push_to_repo:
     - if: $CI_COMMIT_BRANCH == "dev"
       variables:
         REPO: teleport-stage
-      changes:
-        - ${CHART_NAME}/**/*
       allow_failure: true
   script:
     - |
