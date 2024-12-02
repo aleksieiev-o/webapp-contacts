@@ -69,7 +69,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   hosts:
-    - host: contacts-app-local
+    - host: contacts-app-education-2024-local.cluster.de
       paths:
         - path: /
           pathType: Prefix

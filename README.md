@@ -72,6 +72,20 @@
 
 P.S. When the container is built using GitLab, the variables defined in the repository will be used. However, some variables from the .env file will not be used.
 
+##### Here are the recommended steps, to roll out the project in a local cluster on your local machine:
+
+- Clone this repository to your local machine
+
+- Download and install [minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download)
+
+- Run `minikube start` to create and start a local cluster
+
+- Run `minikube tunnel` to create a tunnel to get access to the url address of the application. The tab with this command must remain open to be able to access the page
+
+- Run `helm upgrade --install webapp-contacts-charts webapp-contacts-charts -f ./webapp-contacts-charts/values.local.yaml` to roll out this project local
+
+- You can check statuses of the chart components using the "VS-Code Kubernetes extension"
+
 ---
 
 ## Technologies
