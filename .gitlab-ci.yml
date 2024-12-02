@@ -122,6 +122,9 @@ deploy_helm:
     - |
       cat << EOF > values.yaml
       imageCredentials:
+        name: dockerregistrysecret
+        registry: crtpdev.azurecr.io
+        username: crtpdev
         password: ${CI_REGISTRY_PASSWORD}
 
       namespace: ${CHART_NAMESPACE}
@@ -144,7 +147,7 @@ deploy_helm:
           NODE_ENV: production
           HOST: 0.0.0.0
           PORT: 4000
-          DB_HOST: ${RELEASE_NAME}-database
+          DB_HOST: ${RELEASE_NAME}-database.{CHART_NAMESPACE}.svc.cluster.local
           DB_PORT: 3306
           MARIADB_USER: ${DB_USER}
           MARIADB_PASSWORD: ${DB_PASSWORD}
@@ -161,14 +164,14 @@ deploy_helm:
           tag: latest
           pullPolicy: Always
         service:
-          type: ClusterIP
+          type: NodePort
           port: "4000"
         containerPort: "4000"
         env:
           NODE_ENV: production
           HOST: 0.0.0.0
           PORT: 4000
-          DB_HOST: ${RELEASE_NAME}-database
+          DB_HOST: ${RELEASE_NAME}-database.{CHART_NAMESPACE}.svc.cluster.local
           DB_PORT: 3306
           MARIADB_USER: ${DB_USER}
           MARIADB_PASSWORD: ${DB_PASSWORD}
