@@ -147,7 +147,7 @@ deploy_helm:
           NODE_ENV: production
           HOST: 0.0.0.0
           PORT: 4000
-          DB_HOST: ${RELEASE_NAME}-database.{CHART_NAMESPACE}.svc.cluster.local
+          DB_HOST: ${RELEASE_NAME}-database.${CHART_NAMESPACE}.svc.cluster.local
           DB_PORT: 3306
           MARIADB_USER: ${DB_USER}
           MARIADB_PASSWORD: ${DB_PASSWORD}
@@ -171,7 +171,7 @@ deploy_helm:
           NODE_ENV: production
           HOST: 0.0.0.0
           PORT: 4000
-          DB_HOST: ${RELEASE_NAME}-database.{CHART_NAMESPACE}.svc.cluster.local
+          DB_HOST: ${RELEASE_NAME}-database.${CHART_NAMESPACE}.svc.cluster.local
           DB_PORT: 3306
           MARIADB_USER: ${DB_USER}
           MARIADB_PASSWORD: ${DB_PASSWORD}
